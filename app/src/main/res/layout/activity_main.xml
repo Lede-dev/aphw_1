@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="#FB9D7E"
         >
 
         <Button
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2.2"
             android:gravity="center"
+            android:textColor="@android:color/black"
             android:text="년 월"
 
             />
@@ -60,18 +62,107 @@
 
     </LinearLayout>
 
-    <!--    GridView로 요일과 일 표시 -->
-    <!--    GridView 출력 크기 조정 -->
-    
-    <GridView
-        android:id="@+id/w_grid"
+    <!--
+        LinearLayout을 horizontal로 수평 배열
+        TextView로 주 표시
+    -->
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignTop="@id/image"
-        android:gravity="center"
-        android:background="#19D121"
-        android:numColumns="7"
-        android:stretchMode="columnWidth" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#e6cda7"
+        >
+
+        <TextView
+
+            android:id="@+id/sun"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/holo_red_light"
+            android:text="일"
+
+            />
+
+        <TextView
+
+            android:id="@+id/mon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:text="월"
+
+            />
+
+        <TextView
+
+            android:id="@+id/tue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:text="화"
+
+            />
+
+        <TextView
+
+            android:id="@+id/wed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:text="수"
+
+            />
+
+        <TextView
+
+            android:id="@+id/thu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:text="목"
+
+            />
+
+        <TextView
+
+            android:id="@+id/fri"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:text="금"
+
+            />
+
+        <TextView
+
+            android:id="@+id/sat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@android:color/holo_blue_dark"
+            android:text="토"
+
+            />
+
+
+    </LinearLayout>
+
+    <!--    GridView로 일 표시 -->
+    <!--    GridView 출력 크기 조정 -->
 
     <GridView
         android:id="@+id/d_grid"
@@ -79,6 +170,9 @@
         android:layout_height="match_parent"
         android:layout_alignTop="@id/image"
         android:numColumns="7"
-        android:stretchMode="columnWidth" />
+        android:stretchMode="columnWidth"
+        android:background="#F8CD9E"
+
+        />
 
 </LinearLayout>

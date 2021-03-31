@@ -43,13 +43,7 @@ public class MonthViewActivity extends AppCompatActivity {
         TextView yearMonth = findViewById(R.id.year_month);  // 아이디에 해당하는 텍스트 개체를 찾음
         yearMonth.setText(year+"년 "+ (month+1) +"월"); // 텍스트를 입력
 
-        // Week GridView
-        String[] weeks = {"일", "월", "화", "수", "목", "금", "토"}; // 주 배열 생성
-        ArrayAdapter<String> weekAdapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, weeks); // 어댑터 설정
-        GridView weekView = (GridView) findViewById(R.id.w_grid); // GridView 객체 로딩 w_gird는 activity_main.xml에 정의됨
-        weekView.setAdapter(weekAdapt); // 어댑터를 GridView 객체에 연결
 
-        // Day GridView
 
         // 다음 버튼을 눌렀을 때
 
@@ -95,5 +89,9 @@ public class MonthViewActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void getLeafYear(Integer year){
+
     }
 }
