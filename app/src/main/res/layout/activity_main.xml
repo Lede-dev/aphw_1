@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--    match_parent로  길이를 모두 채움-->
+<!--    vertical로 수직 배열-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MonthViewActivity"
+
+    >
+
+    <!--    LinearLayout을 horizontal로 수평 배열-->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="이전"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+
+
+        <TextView
+
+            android:id="@+id/year_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:text="년 월"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+
+
+        <Button
+
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="65dp"
+            android:text="다음"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+    </LinearLayout>
+
+    <!--    GridView로 요일과 일 표시-->
+
+    <GridView
+        android:id="@+id/w_grid"
+        android:layout_width="385dp"
+        android:layout_height="20dp"
+        android:layout_alignTop="@id/image"
+        android:background="#19D121"
+        android:numColumns="7"
+        android:stretchMode="columnWidth" />
+
+    <GridView
+        android:id="@+id/d_grid"
+        android:layout_width="385dp"
+        android:layout_height="320dp"
+        android:layout_alignTop="@id/image"
+        android:numColumns="7"
+        android:stretchMode="columnWidth" />
+
+</LinearLayout>
