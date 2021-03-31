@@ -51,9 +51,15 @@ public class MonthViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                month += 1; // 다음 달 출력을 위해 month 1 증가
+                if (month > 12){ // month의 범위가 12를 벗어난다면
+                    month = 1; // 현재 달을 1월로 변경
+                    year += 1; // 년도를 1 증가
+                }
+
                 Intent intent = new Intent(getApplicationContext(), MonthViewActivity.class);
-                intent.putExtra("year", year);       //extra에 값 저장
-                intent.putExtra("month", (month+1));  // +1 만큼 extra에 값 저장
+                intent.putExtra("year", year);       //extra에 year 값 저장
+                intent.putExtra("month", month);  //extra에 month 값 저장
                 startActivity(intent); //새 액티비티의 인스턴스를 시작
                 finish(); // 종료
 
@@ -69,9 +75,15 @@ public class MonthViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                month += 1; // 이전 달 출력을 위해 month 1 감소
+                if (month < 1){ // month의 범위가 1을 벗어난다면
+                    month = 12; // 현재 달을 12월로 변경
+                    year -= 1; // 년도를 1 감소
+                }
+
                 Intent intent = new Intent(getApplicationContext(), MonthViewActivity.class);
-                intent.putExtra("year", year);        // extra에 값 저장
-                intent.putExtra("month", (month-1));   // -1만큼 extra에 값 저장
+                intent.putExtra("year", year);        // extra에 year 값 저장
+                intent.putExtra("month", (month-1));   // extra에 month 값 저장
                 startActivity(intent); // 새 액티비티의 인스턴스를 시작
                 finish(); // 종료
 
