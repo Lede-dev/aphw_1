@@ -53,6 +53,25 @@ public class MonthViewActivity extends AppCompatActivity {
         GridView calendar = findViewById(R.id.d_grid); // 그리드 뷰 객체 로드
         calendar.setAdapter(adapt); // 어댑터를 그리드 뷰 객체에 연결
 
+        // 일을 클릭했을 때
+        calendar.setOnItemClickListener(new GridView.OnItemClickListener() {   // 이 함수를 통해 이벤트 리스너 등록
+
+            @SuppressLint("WrongConstant")
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                int firstDayOfMonth = getFirstDay(year, month); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
+                int daysOfMonth = getDay(year, month + 1); // 해당 월의 총 일 수
+
+                int day = position-firstDayOfMonth+2; // 클릭한 일을 계산
+
+                if (day < 1 || day > daysOfMonth) return; // 계산된 일이 달력에 포함된 범위를 벗어났다면 종료
+                
+                Toast.makeText(MonthViewActivity.this, year + "." +
+                        (month + 1) + "." + day, 0).show();      // toast massage로 띄울 text
+
+            }
+        });
 
         // 다음 버튼을 눌렀을 때
 
@@ -99,22 +118,6 @@ public class MonthViewActivity extends AppCompatActivity {
             }
         });
 
-
-        // 일을 클릭했을 때
-
-        GridView DGrid = findViewById(R.id.d_grid);    // ID로부터 대응되는 객체를 찾음
-        DGrid.setOnItemClickListener(new GridView.OnItemClickListener() {   // 이 함수를 통해 이벤트 리스너 등록
-
-            @SuppressLint("WrongConstant")
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                Toast.makeText(MonthViewActivity.this, year + "." +
-                        (month + 1) + "." + position, 0).show();      // toast massage로 띄울 text
-
-            }
-        });
     }
 
 
