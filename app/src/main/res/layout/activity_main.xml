@@ -168,9 +168,7 @@
         android:id="@+id/d_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignTop="@id/image"
         android:numColumns="7"
-        android:stretchMode="columnWidth"
         android:background="#F8CD9E"
 
         />
