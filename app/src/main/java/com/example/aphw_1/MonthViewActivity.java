@@ -158,11 +158,11 @@ public class MonthViewActivity extends AppCompatActivity {
      */
     private Integer getDay(int year, int month){
         if (month == 4 || month == 6 || month == 9 || month == 11) return 30; // 4, 6, 9, 11 : 30일
-        else if (month == 2) { // 2월 윤년 : 29일, 2월 윤년X : 28일
-            if (isLeapYear(year) == true) return 29;
-            else return 28;
+        if (month == 2) { // 2월 윤년 : 29일, 2월 윤년X : 28일
+            if (isLeapYear(year)) return 29;
+            return 28;
         }
-        else return 31; // 나머지 31일
+        return 31; // 나머지 31일
     }
 
     /**
