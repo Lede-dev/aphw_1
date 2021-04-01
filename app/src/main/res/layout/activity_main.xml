@@ -163,6 +163,7 @@
 
     <!--    GridView로 일 표시 -->
     <!--    GridView 출력 크기 조정 -->
+    <!--    listSelector로 선택 되었을 때 색 변경-->
 
     <GridView
         android:id="@+id/d_grid"
@@ -170,6 +171,8 @@
         android:layout_height="match_parent"
         android:numColumns="7"
         android:background="#F8CD9E"
+        android:listSelector="@color/cardview_light_background"
+
 
         />
 
