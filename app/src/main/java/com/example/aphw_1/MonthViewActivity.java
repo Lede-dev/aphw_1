@@ -110,7 +110,7 @@ public class MonthViewActivity extends AppCompatActivity {
      */
 
     private Boolean isLeapYear(Integer year){
-        if (year % 4 == 0 || year % 100 != 0 || year % 400 == 0) return true;
+        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) return true;
         return false;
     }
 
@@ -158,11 +158,11 @@ public class MonthViewActivity extends AppCompatActivity {
      */
     private Integer getDay(int year, int month){
         if (month == 4 || month == 6 || month == 9 || month == 11) return 30; // 4, 6, 9, 11 : 30일
-        if (month == 2) { // 2월 윤년 : 29일, 2월 윤년X : 28일
-            if (isLeapYear(year)) return 29;
-            return 28;
+        else if (month == 2) { // 2월 윤년 : 29일, 2월 윤년X : 28일
+            if (isLeapYear(year) == true) return 29;
+            else return 28;
         }
-        return 31; // 나머지 31일
+        else return 31; // 나머지 31일
     }
 
     /**
@@ -175,19 +175,18 @@ public class MonthViewActivity extends AppCompatActivity {
      */
     private List<String> getDays(int year, int month){
         int firstDayOfMonth = getFirstDay(year, month); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
-        int daysOfMonth = getDay(year, month); // 해당 월의 총 일 수
+        int daysOfMonth = getDay(year, month+1); // 해당 월의 총 일 수
 
         System.out.println(firstDayOfMonth);
 
-        int count = 0;
         List<String> days = new ArrayList<>(); // 날자 리스트 생성
 
         for (int i = 0; i < firstDayOfMonth-1; i++){
             days.add(""); // 리스트에 첫번째 날자 이전의 공백 추가
         }
 
-        for (int j = firstDayOfMonth-1; j < daysOfMonth; j++) {
-            days.add(Integer.toString(++count)); // 리스트에 첫번째 날자부터 추가
+        for (int j = 1; j <= daysOfMonth; j++) {
+            days.add(Integer.toString(j)); // 리스트에 첫번째 날자부터 추가
         }
         
         return days;
