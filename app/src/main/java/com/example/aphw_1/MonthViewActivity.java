@@ -68,7 +68,7 @@ public class MonthViewActivity extends AppCompatActivity {
                 if (day < 1 || day > daysOfMonth) return; // 계산된 일이 달력에 포함된 범위를 벗어났다면 종료
                 
                 Toast.makeText(MonthViewActivity.this, year + "." +
-                        (month + 1) + "." + day, 0).show();      // toast massage로 띄울 text
+                        (month + 1) + "." + day, 0).show();      // toast message로 띄울 text
 
             }
         });
