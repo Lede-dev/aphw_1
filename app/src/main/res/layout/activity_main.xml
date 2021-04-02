@@ -30,10 +30,8 @@
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:gravity="center"
-
             android:drawableLeft="@drawable/ic_baseline_arrow_back_ios_24"
             android:background="#00FFFFFF"
-
 
             />
 
@@ -46,7 +44,6 @@
             android:layout_weight="2.2"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:fontFamily="@font/fontstyle"
             android:text="년 월"
 
             />
@@ -60,9 +57,9 @@
             android:layout_weight="1"
             android:layout_marginRight="10dp"
             android:gravity="center"
-
             android:drawableRight="@drawable/ic_baseline_arrow_forward_ios_24"
             android:background="#00FFFFFF"
+
 
             />
 
@@ -88,7 +85,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/holo_red_light"
-            android:fontFamily="@font/fontstyle"
             android:text="일"
 
             />
@@ -101,7 +97,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:fontFamily="@font/fontstyle"
             android:text="월"
 
             />
@@ -114,7 +109,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:fontFamily="@font/fontstyle"
             android:text="화"
 
             />
@@ -127,7 +121,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:fontFamily="@font/fontstyle"
             android:text="수"
 
             />
@@ -140,7 +133,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:fontFamily="@font/fontstyle"
             android:text="목"
 
             />
@@ -153,7 +145,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:fontFamily="@font/fontstyle"
             android:text="금"
 
             />
@@ -166,7 +157,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/holo_blue_dark"
-            android:fontFamily="@font/fontstyle"
             android:text="토"
 
             />
@@ -187,7 +177,8 @@
         android:listSelector="@color/cardview_light_background"
 
 
-        
+
+
         />
 
 </LinearLayout>
