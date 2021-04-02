@@ -10,6 +10,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MonthViewActivity"
+    android:background="#f7a852"
 
     >
 
@@ -30,7 +31,6 @@
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:gravity="center"
-
             android:drawableLeft="@drawable/ic_baseline_arrow_back_ios_24"
             android:background="#00FFFFFF"
 
@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@android:color/holo_red_light"
+            android:textColor="#ff0000"
             android:fontFamily="@font/fontstyle"
             android:text="일"
 
@@ -165,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@android:color/holo_blue_dark"
+            android:textColor="#0000ff"
             android:fontFamily="@font/fontstyle"
             android:text="토"
 
@@ -181,13 +181,15 @@
     <GridView
         android:id="@+id/d_grid"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:numColumns="7"
-        android:background="#F8CD9E"
-        android:listSelector="@color/cardview_light_background"
+        android:gravity="center_horizontal"
+        android:background="#f7a852"
+        android:verticalSpacing="2dp"
+        android:horizontalSpacing="2dp"
+        android:layout_margin="5dp"
 
-
-        
         />
 
 </LinearLayout>
+

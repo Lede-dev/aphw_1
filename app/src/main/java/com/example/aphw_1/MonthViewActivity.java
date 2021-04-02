@@ -1,21 +1,22 @@
 package com.example.aphw_1;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
 import android.widget.Toast;
-import java.util.ArrayList;
+
+import com.example.aphw_1.adapters.AdpCalendar;
+import com.example.aphw_1.utils.UtlCalendar;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class MonthViewActivity extends AppCompatActivity {
     int year;
     int month;
 
+    View tempView;
 
     @SuppressLint("NewApi")
     @Override
@@ -48,8 +50,11 @@ public class MonthViewActivity extends AppCompatActivity {
 
 
         // GridView 생성
-        List<String> days = getDays(year, month); // 날자 데이터 로드
-        ArrayAdapter<String> adapt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, days); // 어댑터 생성
+        List<Integer> days = UtlCalendar.getDays(year, month); // 날자 데이터 로드
+        AdpCalendar adapt = new AdpCalendar(); // 커스텀 어댑터 객체 로드
+        for (Integer day : days){
+            adapt.addItem(year, month, day); // 어댑터에 데이터 추가
+        }
         GridView calendar = findViewById(R.id.d_grid); // 그리드 뷰 객체 로드
         calendar.setAdapter(adapt); // 어댑터를 그리드 뷰 객체에 연결
 
@@ -60,16 +65,20 @@ public class MonthViewActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                int firstDayOfMonth = getFirstDay(year, month); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
-                int daysOfMonth = getDay(year, month + 1); // 해당 월의 총 일 수
+                int firstDayOfMonth = UtlCalendar.getFirstDay(year, month); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
+                int daysOfMonth = UtlCalendar.getDay(year, month); // 해당 월의 총 일 수
 
-                int day = position-firstDayOfMonth+2; // 클릭한 일을 계산
+                int day = position - firstDayOfMonth + 2; // 클릭한 일을 계산
 
                 if (day < 1 || day > daysOfMonth) return; // 계산된 일이 달력에 포함된 범위를 벗어났다면 종료
-                
+
                 Toast.makeText(MonthViewActivity.this, year + "." +
                         (month + 1) + "." + day, 0).show();      // toast message로 띄울 text
 
+                if (tempView == null) tempView = view; // 이전에 클릭한 뷰가 없다면 임시 뷰를 현재 뷰로 지정
+                tempView.setBackground(getResources().getDrawable(R.drawable.calendar_border_disable)); // 이전에 클릭한 뷰를 테두리 비활성화 상태로 변경
+                view.setBackground(getResources().getDrawable(R.drawable.calendar_border_enable)); // 클릭한 일의 배경 색을 변경
+                tempView = view; // 클릭한 뷰를 임시 뷰로 지정
             }
         });
 
@@ -118,94 +127,6 @@ public class MonthViewActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-
-    /**
-     * 입력한 년도가 윤년인지 판단, 윤년이라면 true를 반환한다.
-     *
-     * @param year
-     * @return boolean
-     */
-
-    private Boolean isLeapYear(Integer year) {
-        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) return true;
-        return false;
-    }
-
-    /**
-     * 입력한 년도, 입력한 월의 첫번째 날자의 요일을 반환.
-     *
-     * @param year
-     * @param month 0 ~ 11
-     * @return int 1 ~ 7 (일 ~ 토)
-     */
-
-    private Integer getFirstDay(int year, int month) {
-        Calendar cal = java.util.Calendar.getInstance(); // 새로운 Calendar 객체 생성
-        cal.set(Calendar.YEAR, year); // 입력받은 년도를 Calendar 객체에 입력
-        cal.set(Calendar.MONTH, month); // 입력받은 월을 Calendar 객체에 입력
-        cal.set(Calendar.DATE, 1); // 입력받은 년도, 월의 첫번째 일을 Calendar 객체에 입력
-        return cal.get(Calendar.DAY_OF_WEEK); // 입력받은 월의 첫번째 일의 요일을 반환
-    }
-
-    /**
-     * 입력한 년도, 입력한 월의 마지막 날자의 요일을 반환
-     *
-     * @param year
-     * @param month 0 ~ 11
-     * @return int 1 ~ 7 (일 ~ 토)
-     */
-
-    private Integer getLastDay(int year, int month) {
-        Calendar cal = java.util.Calendar.getInstance(); // 새로운 Calendar 객체 생성
-        cal.set(Calendar.YEAR, year); // 입력받은 년도를 Calendar 객체에 입력
-        cal.set(Calendar.MONTH, month); // 입력받은 월을 Calendar 객체에 입력
-        cal.set(Calendar.DATE, getDay(year, month)); // 입력받은 년도, 월의 마지막 일을 Calendar 객체에 입력
-        return cal.get(Calendar.DAY_OF_WEEK); // 입력받은 월의 마지막 일의 요일을 반환
-    }
-
-    /**
-     * 입력한 년도, 입력한 월이 몇 일 까지 존재하는지 반환
-     *
-     * @param year
-     * @param month 0 ~ 11
-     * @return int 28, 29, 30, 31
-     */
-    private Integer getDay(int year, int month) {
-        if (month == 4 || month == 6 || month == 9 || month == 11) return 30; // 4, 6, 9, 11 : 30일
-        if (month == 2) { // 2월 윤년 : 29일, 2월 윤년X : 28일
-            if (isLeapYear(year)) return 29;
-            return 28;
-        }
-        return 31; // 나머지 31일
-    }
-
-    /**
-     * 7 x 7 크기의 GridView에 출력할 날자가 포함된 배열을 생성
-     *
-     * @param year
-     * @param month 0 ~ 11
-     * @return String[49]
-     */
-    private List<String> getDays(int year, int month) {
-        int firstDayOfMonth = getFirstDay(year, month); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
-        int daysOfMonth = getDay(year, month + 1); // 해당 월의 총 일 수
-
-        System.out.println(firstDayOfMonth);
-
-        List<String> days = new ArrayList<>(); // 날자 리스트 생성
-
-        for (int i = 0; i < firstDayOfMonth - 1; i++) {
-            days.add(""); // 리스트에 첫번째 날자 이전의 공백 추가
-        }
-
-
-        for (int j = 1; j <= daysOfMonth; j++) {
-            days.add(Integer.toString(j)); // 리스트에 첫번째 날자부터 추가
-        }
-
-        return days;
     }
 
 }
