@@ -53,7 +53,6 @@ public class AdpCalendar extends BaseAdapter {
         //xml에 TextView를 참조
 
         int firstDayOfMonth = UtlCalendar.getFirstDay(listItem.getYear(), listItem.getMonth()); // 현재 년도, 현재 달의 첫번째 일의 요일
-        int lastDayOfMonth = UtlCalendar.getLastDay(listItem.getYear(), listItem.getMonth()); // 현재 년도, 현재 달의 마지막 요일
         int daysOfMonth = UtlCalendar.getDay(listItem.getYear(), listItem.getMonth()); // 현재 년도 현재 달의 마지막 일
 
         TextView view = convertView.findViewById(R.id.dayView_format);

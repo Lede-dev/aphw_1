@@ -4,7 +4,6 @@ public class ListItem {
     Integer year;
     Integer month;
     Integer day;
-    Integer count;
 
     public ListItem(Integer year, Integer month, Integer day){
         this.year = year;
