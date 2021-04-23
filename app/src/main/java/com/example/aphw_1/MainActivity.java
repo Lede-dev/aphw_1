@@ -5,31 +5,20 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.GridView;
-import android.widget.TextView;
 
 import android.widget.Toast;
 
-import com.example.aphw_1.adapters.AdpCalendar;
-import com.example.aphw_1.utils.UtlCalendar;
+import com.example.aphw_1.data.CurrentTime;
+import com.example.aphw_1.fragments.MonthViewFragment;
+import com.example.aphw_1.fragments.WeekViewFragment;
 
 import java.util.Calendar;
-import java.util.List;
 
-public class MonthViewActivity extends AppCompatActivity {
-
-    int year;
-    int month;
-
-    View tempView;
+public class MainActivity extends AppCompatActivity {
 
     // 메뉴 생성
     @Override
@@ -42,6 +31,15 @@ public class MonthViewActivity extends AppCompatActivity {
     // 메뉴 클릭 리스너
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        CurrentTime currentTime = new CurrentTime(); // 현재 시간 로드
+        Intent intent = new Intent(this, MainActivity.class);  // 인텐트 생성
+
+        // intent에 전달할 년/월 입력
+        intent.putExtra("year", currentTime.getYear());
+        intent.putExtra("month", currentTime.getMonth());
+
+
         switch (item.getItemId()) {
             // 설정 아이콘 클릭 시
             case R.id.action_settings:
@@ -50,12 +48,15 @@ public class MonthViewActivity extends AppCompatActivity {
 
             // 월간 달력 전환
             case R.id.action_monthview:
-                //startActivity(new Intent(this,SubActivity.class));
+                intent.putExtra("view", "month"); // intent에 전달할 fragment 입력
+                startActivity(intent); // 새로운 Activity 시작
                 return true;
 
             // 주간 달력 전환
             case R.id.action_weekview:
-
+                intent.putExtra("view", "week"); // intent에 전달할 fragment 입력
+                startActivity(intent); // 새로운 Activity 시작
+                finish();
                 return true;
 
             default:
@@ -67,29 +68,44 @@ public class MonthViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        
+        setContentView(R.layout.new_activity_main); // Fragment를 불러오기 위해 새로 제작된 xml 사용
 
         Intent intent = getIntent();  // 인텐트를 받아 사용
 
-        year = intent.getIntExtra("year", -1);   // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 -1 리턴
-        month = intent.getIntExtra("month", -1);  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 -1 리턴
+        int year = intent.getIntExtra("year", -1);  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 -1 리턴
+        int month = intent.getIntExtra("month", -1);  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 -1 리턴
 
         if (year == -1 || month == -1) {  // year나 month가 -1이면
             month = Calendar.getInstance().get(Calendar.MONTH);  // 현재 달을 가져옴
             year = Calendar.getInstance().get(Calendar.YEAR);    // 현재 년도를 가져옴
-
         }
+
+        // 년/월 정보를 담고있는 CurrentTime 객체 생성
+        CurrentTime currentTime = new CurrentTime(year, month);
 
         // 툴 바를 앱 바로 설정
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar); // 툴 바 로드
-        myToolbar.setTitle(year + "년 " + (month+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
+        myToolbar.setTitle(currentTime.getYear() + "년 " + (currentTime.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
         setSupportActionBar(myToolbar); // 툴 바를 앱 바로 설정
+
+        // 출력할 Fragment 생성
+        String view = intent.getStringExtra("view"); // 출력할 fragment 설정
+
+        // 출력할 뷰가 WeekView
+        if (view != null && view.equalsIgnoreCase("week")) getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new WeekViewFragment()).commit();
+        
+        // 출력할 뷰가 MonthView거나 설정되어있지 않음
+        else getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new MonthViewFragment()).commit();
 
 
         /* 변경됨
          TextView yearMonth = findViewById(R.id.year_month);  // 아이디에 해당하는 텍스트 개체를 찾음
          yearMonth.setText(year + "년 " + (month + 1) + "월"); // 텍스트를 입력
          */
+
+        /* 변경됨
+
 
         // GridView 생성
         List<Integer> days = UtlCalendar.getDays(year, month); // 날자 데이터 로드
@@ -114,7 +130,7 @@ public class MonthViewActivity extends AppCompatActivity {
 
                 if (day < 1 || day > daysOfMonth) return; // 계산된 일이 달력에 포함된 범위를 벗어났다면 종료
 
-                Toast.makeText(MonthViewActivity.this, year + "." +
+                Toast.makeText(MainActivity.this, year + "." +
                         (month + 1) + "." + day, 0).show();      // toast message로 띄울 text
 
                 if (tempView == null) tempView = view; // 이전에 클릭한 뷰가 없다면 임시 뷰를 현재 뷰로 지정
@@ -123,6 +139,8 @@ public class MonthViewActivity extends AppCompatActivity {
                 tempView = view; // 클릭한 뷰를 임시 뷰로 지정
             }
         });
+        
+         */
 
         // 다음 버튼을 눌렀을 때
 

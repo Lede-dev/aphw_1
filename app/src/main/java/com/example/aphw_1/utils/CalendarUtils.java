@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class UtlCalendar {
+public class CalendarUtils {
 
     /**
      * 입력한 년도가 윤년인지 판단, 윤년이라면 true를 반환한다.

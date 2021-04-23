@@ -1,4 +1,4 @@
-package com.example.aphw_1.adapters;
+package com.example.aphw_1.data;
 
 public class ListItem {
     Integer year;

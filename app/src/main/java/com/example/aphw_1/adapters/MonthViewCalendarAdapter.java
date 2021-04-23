@@ -9,12 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.aphw_1.R;
-import com.example.aphw_1.utils.UtlCalendar;
+import com.example.aphw_1.data.ListItem;
+import com.example.aphw_1.utils.CalendarUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class AdpCalendar extends BaseAdapter {
+public class MonthViewCalendarAdapter extends BaseAdapter {
 
     ArrayList<ListItem> items = new ArrayList<>(); // 달력 날자
     Context context;
@@ -52,8 +52,8 @@ public class AdpCalendar extends BaseAdapter {
 
         //xml에 TextView를 참조
 
-        int firstDayOfMonth = UtlCalendar.getFirstDay(listItem.getYear(), listItem.getMonth()); // 현재 년도, 현재 달의 첫번째 일의 요일
-        int daysOfMonth = UtlCalendar.getDay(listItem.getYear(), listItem.getMonth()); // 현재 년도 현재 달의 마지막 일
+        int firstDayOfMonth = CalendarUtils.getFirstDay(listItem.getYear(), listItem.getMonth()); // 현재 년도, 현재 달의 첫번째 일의 요일
+        int daysOfMonth = CalendarUtils.getDay(listItem.getYear(), listItem.getMonth()); // 현재 년도 현재 달의 마지막 일
 
         TextView view = convertView.findViewById(R.id.dayView_format);
 
@@ -64,7 +64,7 @@ public class AdpCalendar extends BaseAdapter {
             return convertView;
         }
 
-        int dayOfWeek = UtlCalendar.getDayOfWeek(listItem.getYear(), listItem.getMonth(), listItem.getDay()); // 입력받은 일의 요일을 계산
+        int dayOfWeek = CalendarUtils.getDayOfWeek(listItem.getYear(), listItem.getMonth(), listItem.getDay()); // 입력받은 일의 요일을 계산
 
         if (dayOfWeek == 1){ // 입력받은 일이 일요일일 때
             view.setTextColor(Color.parseColor("#ff0000")); // 글자 색을 빨간색으로 변경
