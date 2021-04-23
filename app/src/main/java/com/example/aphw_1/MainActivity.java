@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.aphw_1.data.CurrentTime;
 import com.example.aphw_1.fragments.MonthViewFragment;
 import com.example.aphw_1.fragments.WeekViewFragment;
+import com.example.aphw_1.utils.FragmentID;
 
 import java.util.Calendar;
 
@@ -48,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
             // 월간 달력 전환
             case R.id.action_monthview:
-                intent.putExtra("view", "month"); // intent에 전달할 fragment 입력
+                intent.putExtra("view", FragmentID.MONTH.getID()); // intent에 전달할 fragment 입력
                 startActivity(intent); // 새로운 Activity 시작
                 return true;
 
             // 주간 달력 전환
             case R.id.action_weekview:
-                intent.putExtra("view", "week"); // intent에 전달할 fragment 입력
+                intent.putExtra("view", FragmentID.WEEK.getID()); // intent에 전달할 fragment 입력
                 startActivity(intent); // 새로운 Activity 시작
                 finish();
                 return true;
@@ -90,13 +91,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar); // 툴 바를 앱 바로 설정
 
         // 출력할 Fragment 생성
-        String view = intent.getStringExtra("view"); // 출력할 fragment 설정
+        int view = intent.getIntExtra("view", FragmentID.MONTH.getID()); // 출력할 fragmentID 로드, 해당 되는 이름의 벨류가 없을 때 MonthView ID 리턴
+
+        // 출력할 뷰가 MonthView
+        if (view == FragmentID.MONTH.getID()) getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new MonthViewFragment()).commit();
 
         // 출력할 뷰가 WeekView
-        if (view != null && view.equalsIgnoreCase("week")) getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new WeekViewFragment()).commit();
-        
-        // 출력할 뷰가 MonthView거나 설정되어있지 않음
-        else getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new MonthViewFragment()).commit();
+        else if (view == FragmentID.WEEK.getID()) getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new WeekViewFragment()).commit();
 
 
         /* 변경됨
