@@ -1,11 +1,15 @@
 package com.example.aphw_1;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -27,6 +31,38 @@ public class MonthViewActivity extends AppCompatActivity {
 
     View tempView;
 
+    // 메뉴 생성
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // 메뉴 클릭 리스너
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // 설정 아이콘 클릭 시
+            case R.id.action_settings:
+                Toast.makeText(getApplicationContext(), "action_settings", Toast.LENGTH_SHORT).show();
+                return true;
+
+            // 월간 달력 전환
+            case R.id.action_monthview:
+                //startActivity(new Intent(this,SubActivity.class));
+                return true;
+
+            // 주간 달력 전환
+            case R.id.action_weekview:
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +80,16 @@ public class MonthViewActivity extends AppCompatActivity {
 
         }
 
+        // 툴 바를 앱 바로 설정
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar); // 툴 바 로드
+        myToolbar.setTitle(year + "년 " + (month+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
+        setSupportActionBar(myToolbar); // 툴 바를 앱 바로 설정
 
-        TextView yearMonth = findViewById(R.id.year_month);  // 아이디에 해당하는 텍스트 개체를 찾음
-        yearMonth.setText(year + "년 " + (month + 1) + "월"); // 텍스트를 입력
 
+        /* 변경됨
+         TextView yearMonth = findViewById(R.id.year_month);  // 아이디에 해당하는 텍스트 개체를 찾음
+         yearMonth.setText(year + "년 " + (month + 1) + "월"); // 텍스트를 입력
+         */
 
         // GridView 생성
         List<Integer> days = UtlCalendar.getDays(year, month); // 날자 데이터 로드
@@ -84,6 +126,7 @@ public class MonthViewActivity extends AppCompatActivity {
 
         // 다음 버튼을 눌렀을 때
 
+        /* 변경됨
         Button nextBtn = findViewById(R.id.next);  // ID로부터 대응되는 객체를 찾음
         nextBtn.setOnClickListener(new View.OnClickListener() {  // 이 함수를 통해 이벤트 리스너 등록
 
@@ -126,7 +169,7 @@ public class MonthViewActivity extends AppCompatActivity {
 
             }
         });
-
+        */
     }
 
 }

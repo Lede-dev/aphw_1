@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- 설정 아이콘 -->
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        app:showAsAction="ifRoom"/>
+
+    <!-- 메뉴 -->
+    <item
+        android:id="@+id/action_monthview"
+        android:title="월간"/>
+
+    <item
+        android:id="@+id/action_weekview"
+        android:title="주간"/>
+
+</menu>
