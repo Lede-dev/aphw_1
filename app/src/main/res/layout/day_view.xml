@@ -3,14 +3,12 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dayView_format"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:theme="@style/LightTheme"
     android:gravity="center"
     android:textColor="?attr/dayCharColor"
     android:textStyle="normal"
     android:background="?attr/calendarViewColor"
-    android:textSize="30dp"
-    android:minHeight="110dp"
     android:textAppearance="?android:attr/textAppearanceLarge"
 
     />

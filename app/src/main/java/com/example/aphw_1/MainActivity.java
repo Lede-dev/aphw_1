@@ -2,24 +2,38 @@ package com.example.aphw_1;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import android.view.View;
+import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.aphw_1.adapters.MonthViewPagerAdapter;
 import com.example.aphw_1.data.CurrentTime;
-import com.example.aphw_1.fragments.MonthViewFragment;
 import com.example.aphw_1.fragments.WeekViewFragment;
 import com.example.aphw_1.utils.FragmentID;
 
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static MainActivity instance;
+
+    private static GridView calendarView;
+
+    // 외부 class에서 사용하기 위한 Instance 반환
+    public static MainActivity getInstance(){
+        return instance;
+    }
 
     // 메뉴 생성
     @Override
@@ -33,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        CurrentTime currentTime = new CurrentTime(); // 현재 시간 로드
+        CurrentTime currentTime = new CurrentTime(); // 현재 년/월 로드
         Intent intent = new Intent(this, MainActivity.class);  // 인텐트 생성
 
         // intent에 전달할 년/월 입력
@@ -51,13 +65,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_monthview:
                 intent.putExtra("view", FragmentID.MONTH.getID()); // intent에 전달할 fragment 입력
                 startActivity(intent); // 새로운 Activity 시작
+                finish(); // 기존 Activity 종료
                 return true;
 
             // 주간 달력 전환
             case R.id.action_weekview:
                 intent.putExtra("view", FragmentID.WEEK.getID()); // intent에 전달할 fragment 입력
                 startActivity(intent); // 새로운 Activity 시작
-                finish();
+                finish(); // 기존 Activity 종료
                 return true;
 
             default:
@@ -65,22 +80,36 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // 화면 회전 리스너
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // 세로모드 변경
+        if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+        }
+
+        // 가로모드 변경
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+        }
+
+    }
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         setContentView(R.layout.new_activity_main); // Fragment를 불러오기 위해 새로 제작된 xml 사용
+
+        // Activity가 생성될 때 생성된 Activtiy를 저장
+        instance = this;
 
         Intent intent = getIntent();  // 인텐트를 받아 사용
 
-        int year = intent.getIntExtra("year", -1);  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 -1 리턴
-        int month = intent.getIntExtra("month", -1);  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 -1 리턴
-
-        if (year == -1 || month == -1) {  // year나 month가 -1이면
-            month = Calendar.getInstance().get(Calendar.MONTH);  // 현재 달을 가져옴
-            year = Calendar.getInstance().get(Calendar.YEAR);    // 현재 년도를 가져옴
-        }
+        int year = intent.getIntExtra("year", Calendar.getInstance().get(Calendar.YEAR));  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 현재 년도를 리턴
+        int month = intent.getIntExtra("month", Calendar.getInstance().get(Calendar.MONTH));  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 현재 달을 리턴
 
         // 년/월 정보를 담고있는 CurrentTime 객체 생성
         CurrentTime currentTime = new CurrentTime(year, month);
@@ -93,12 +122,35 @@ public class MainActivity extends AppCompatActivity {
         // 출력할 Fragment 생성
         int view = intent.getIntExtra("view", FragmentID.MONTH.getID()); // 출력할 fragmentID 로드, 해당 되는 이름의 벨류가 없을 때 MonthView ID 리턴
 
-        // 출력할 뷰가 MonthView
-        if (view == FragmentID.MONTH.getID()) getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new MonthViewFragment()).commit();
+        // 출력할 뷰가 MonthView 일 때
+        if (view == FragmentID.MONTH.getID()){
 
-        // 출력할 뷰가 WeekView
-        else if (view == FragmentID.WEEK.getID()) getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new WeekViewFragment()).commit();
+            // pager adapter 객체 설정
+            ViewPager2 vpPager = findViewById(R.id.vpPager); // pager 로드
+            FragmentStateAdapter adapter = new MonthViewPagerAdapter(this); // pager adapter 로드
+            vpPager.setAdapter(adapter); // pager와 adapter를 연결
 
+            // 출력할 페이지를 현재 달에 맞는 페이지로 설정
+            vpPager.setCurrentItem(month);
+
+            // pager callback
+            vpPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    currentTime.setMonth(position); // 현재 월을 저장
+                    myToolbar.setTitle(currentTime.getYear() + "년 " + (currentTime.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
+                }
+            });
+
+        }
+
+        // 출력할 뷰가 WeekView 일 때
+        else if (view == FragmentID.WEEK.getID()){
+            // 최초 실행할 fragment
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new WeekViewFragment()).commit();
+
+
+        }
 
         /* 변경됨
          TextView yearMonth = findViewById(R.id.year_month);  // 아이디에 해당하는 텍스트 개체를 찾음
@@ -106,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
          */
 
         /* 변경됨
-
-
         // GridView 생성
         List<Integer> days = UtlCalendar.getDays(year, month); // 날자 데이터 로드
         AdpCalendar adapt = new AdpCalendar(); // 커스텀 어댑터 객체 로드

@@ -8,19 +8,19 @@
 
     <!--    GridView로 일 표시 -->
     <!--    GridView 출력 크기 조정 -->
-    <!--    listSelector로 선택 되었을 때 색 변경-->
-
     <GridView
         android:theme="@style/LightTheme"
         android:id="@+id/d_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="7"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:background="?attr/calendarGridColor"
         android:verticalSpacing="2dp"
         android:horizontalSpacing="2dp"
-
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp"
+        android:isScrollContainer="false"
         />
 
 </FrameLayout>

@@ -1,5 +1,15 @@
 package com.example.aphw_1.utils;
 
+import android.graphics.Point;
+import android.view.Display;
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
+
+import com.example.aphw_1.MainActivity;
+import com.example.aphw_1.R;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -110,11 +120,91 @@ public class CalendarUtils {
             days.add(j); // 리스트에 첫번째 날자부터 추가
         }
 
-        for (int k = 0; k < 7-lastDayOfMonth; k ++){
-            days.add(k+1); // 리스트에 이후 달의 일을 추가
+        // 그리드뷰의 행을 6행으로 조정
+        // days의 크기가 35개 이하일 때 (5행일 때)
+        if (days.size() <= 35){
+            for (int k = 0; k < 14-lastDayOfMonth; k ++){
+                days.add(k+1); // 리스트에 이후 달의 일을 추가
+            }
+        }
+        
+        // 6행일 때
+        else {
+            for (int k = 0; k < 7-lastDayOfMonth; k ++){
+                days.add(k+1); // 리스트에 이후 달의 일을 추가
+            }
         }
 
         return days;
     }
 
+    /**
+     * 캘린더의 전체 높이 반환
+     * pixel 단위
+     * @return int height
+     */
+    public static int getCalenderHeight() {
+
+        // 디스플레이 높이 설정
+        int displayHeight = getDisplayHeight();
+
+        // 스테이터스 바 높이 설정
+        int statusHeight = getStatusBarHeight();
+
+        // 앱 바 높이 설정
+        int appBarHeight = getAppBarHeight();
+
+        // 주 표시 바 높이 설정
+        int weekHeight = getWeekBarHeight();
+
+        // 높이 오차 설정 (스크롤바가 생기지 않도록 설정)
+        int e = displayHeight / 75;
+
+        // 달력 높이 설정
+        int calendarHeight = displayHeight - statusHeight - appBarHeight - weekHeight - e;
+
+        return calendarHeight;
+    }
+
+    /**
+     * 디스플레이 높이 반환
+     * @return int Display height
+     */
+    public static int getDisplayHeight() {
+        Display display = MainActivity.getInstance().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.y;
+    }
+
+    /**
+     * 스테이터스 바 높이 반환
+     * @return int Ststusbar height
+     */
+    public static int getStatusBarHeight() {
+        int	result = 0;
+        int resourceId = MainActivity.getInstance().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = MainActivity.getInstance().getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    /**
+     * 앱 바 높이 반환
+     * @return int Appbar height
+     */
+    public static int getAppBarHeight() {
+        Toolbar bar = (Toolbar) MainActivity.getInstance().findViewById(R.id.toolbar);
+        return bar.getHeight();
+    }
+
+    /**
+     * 주 표시 바 높이 반환
+     * @return int Weekbar height
+     */
+    public static int getWeekBarHeight() {
+        TextView view = MainActivity.getInstance().findViewById(R.id.sun);
+        return view.getHeight();
+    }
 }

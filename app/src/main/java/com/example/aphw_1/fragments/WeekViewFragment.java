@@ -12,9 +12,7 @@ import com.example.aphw_1.R;
 
 import java.io.Serializable;
 
-public class WeekViewFragment extends Fragment implements Serializable {
-
-    private static final long serialVersionUID = 2L;
+public class WeekViewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
