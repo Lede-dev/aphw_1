@@ -114,14 +114,13 @@ public class MainActivity extends AppCompatActivity {
         // Activity가 생성될 때 생성된 Activtiy를 저장
         instance = this;
 
-
         // 가로모드일 때 달력 높이 오차 설정
-        if(MainActivity.getInstance().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             CalendarUtils.setErrorHeightInLandScape();
         }
 
         // 세로모드일 때 달력 높이 오차 설정
-        else if (MainActivity.getInstance().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             CalendarUtils.setErrorHeight();
         }
 
