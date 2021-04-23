@@ -1,5 +1,6 @@
 package com.example.aphw_1.utils;
 
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.view.Display;
 import android.view.View;
@@ -15,6 +16,9 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CalendarUtils {
+
+    // 캘린더 출력 오차
+    private static int e;
 
     /**
      * 입력한 년도가 윤년인지 판단, 윤년이라면 true를 반환한다.
@@ -158,10 +162,12 @@ public class CalendarUtils {
         int weekHeight = getWeekBarHeight();
 
         // 높이 오차 설정 (스크롤바가 생기지 않도록 설정)
-        int e = displayHeight / 75;
+        int e = getErrorHeight();
 
         // 달력 높이 설정
         int calendarHeight = displayHeight - statusHeight - appBarHeight - weekHeight - e;
+
+        System.out.println(displayHeight+ " - " + statusHeight + " - " + appBarHeight + " - " + weekHeight + " = " + (displayHeight - statusHeight - appBarHeight - weekHeight));
 
         return calendarHeight;
     }
@@ -206,5 +212,26 @@ public class CalendarUtils {
     public static int getWeekBarHeight() {
         TextView view = MainActivity.getInstance().findViewById(R.id.sun);
         return view.getHeight();
+    }
+
+    /**
+     * 세로모드일 때 캘린더 출력 높이 오차 설정
+     */
+    public static void setErrorHeight() {
+        CalendarUtils.e = getDisplayHeight()/70;
+    }
+
+    /**
+     *  가로모드일 때 캘린더 출력 높이 오차 설정
+     */
+    public static void setErrorHeightInLandScape() {
+        CalendarUtils.e = getDisplayHeight()/40;
+    }
+
+    /**
+     * 캘린더 출력 높이 오차 반환
+     */
+    public static int getErrorHeight() {
+        return e;
     }
 }

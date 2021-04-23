@@ -20,7 +20,6 @@
         android:horizontalSpacing="2dp"
         android:paddingLeft="1dp"
         android:paddingRight="1dp"
-        android:isScrollContainer="false"
         />
 
 </FrameLayout>

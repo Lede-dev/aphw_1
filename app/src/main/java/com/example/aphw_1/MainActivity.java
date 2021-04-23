@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.aphw_1.adapters.MonthViewPagerAdapter;
 import com.example.aphw_1.data.CurrentTime;
 import com.example.aphw_1.fragments.WeekViewFragment;
+import com.example.aphw_1.utils.CalendarUtils;
 import com.example.aphw_1.utils.FragmentID;
 
 import java.util.Calendar;
@@ -88,10 +89,17 @@ public class MainActivity extends AppCompatActivity {
         // 세로모드 변경
         if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
+            // 세로모드일 때 캘린더 높이 오차 설정
+            CalendarUtils.setErrorHeight();
+
+            
         }
 
         // 가로모드 변경
         if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            // 가로모드일 때 캘린더 높이 오차 설정
+            CalendarUtils.setErrorHeightInLandScape();
 
         }
 
@@ -105,6 +113,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Activity가 생성될 때 생성된 Activtiy를 저장
         instance = this;
+
+
+        // 가로모드일 때 달력 높이 오차 설정
+        if(MainActivity.getInstance().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            CalendarUtils.setErrorHeightInLandScape();
+        }
+
+        // 세로모드일 때 달력 높이 오차 설정
+        else if (MainActivity.getInstance().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            CalendarUtils.setErrorHeight();
+        }
 
         Intent intent = getIntent();  // 인텐트를 받아 사용
 
