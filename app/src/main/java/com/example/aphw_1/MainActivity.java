@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_activity_main); // Fragment를 불러오기 위해 새로 제작된 xml 사용
+        setContentView(R.layout.new_activity_main); // Fragment를 불러오기 위해 새로 제작된 new_activity_main.xml 사용
 
-        // Activity가 생성될 때 생성된 Activtiy를 저장
+        // Activity가 생성될 때 생성된 Activtiy를 저장, 다른 class에서 Activity에 접근하기 위함
         instance = this;
 
         // 가로모드일 때 달력 높이 오차 설정
