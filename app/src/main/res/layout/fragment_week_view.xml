@@ -22,6 +22,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text=""
+            android:background="@color/white"
 
             />
 
@@ -33,6 +34,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text=""
+            android:background="@color/white"
 
             />
 
@@ -44,6 +46,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text=""
+            android:background="@color/white"
 
             />
 
@@ -55,6 +58,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text=""
+            android:background="@color/white"
 
             />
 
@@ -65,7 +69,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text=""
+            android:background="@color/white"
 
             />
 
@@ -77,6 +81,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text=""
+            android:background="@color/white"
 
             />
 
@@ -88,6 +93,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text=""
+            android:background="@color/white"
 
             />
 
@@ -100,9 +106,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity ="center"
+        android:layout_gravity="bottom"
         android:fillViewport="true"
         android:layout_marginTop="0dp"
+        android:gravity="center"
 
         >
 
@@ -113,7 +120,7 @@
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:background="@color/white"
             >
 
 
@@ -127,18 +134,19 @@
 
                 />
 
-            <GridView
 
-                android:id="@+id/wd_grid"
+
+            <xx.xxx.xx.view.ExpandableHeightGridView
+                android:id="@+id/spotsView"
+                android:horizontalSpacing="10dp"
+                android:isScrollContainer="false"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="10dp"
                 android:layout_gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_height="680dp"
                 android:numColumns="7"
-                android:gravity="center"
-
-
-
-                />
+                android:gravity="center"/>
 
         </LinearLayout>
 
