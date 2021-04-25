@@ -138,15 +138,16 @@
 
             <xx.xxx.xx.view.ExpandableHeightGridView
                 android:id="@+id/spotsView"
-                android:horizontalSpacing="10dp"
                 android:isScrollContainer="false"
                 android:stretchMode="columnWidth"
-                android:verticalSpacing="10dp"
                 android:layout_gravity="bottom"
                 android:layout_width="match_parent"
                 android:layout_height="680dp"
                 android:numColumns="7"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:verticalSpacing="2dp"
+                android:horizontalSpacing="2dp"
+                />
 
         </LinearLayout>
 
