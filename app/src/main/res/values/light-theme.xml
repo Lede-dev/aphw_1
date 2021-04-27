@@ -38,6 +38,9 @@
         <!-- 달력의 그리드 격자 테두리 색 -->
         <item name="calendarGridColor">#bbbbbb</item>
 
+        <!-- 달력의 주간 뷰 요일/시간 색 -->
+        <item name="calendarTimeColor">#000000</item>
+
     </style>
 
 </resources>

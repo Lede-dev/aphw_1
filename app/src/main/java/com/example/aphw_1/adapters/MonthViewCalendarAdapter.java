@@ -23,17 +23,6 @@ public class MonthViewCalendarAdapter extends BaseAdapter {
     ArrayList<ListItem> items = new ArrayList<>(); // 달력 날자
     Context context;
 
-    public static int ROW_NUMBER = 6;
-    GridView mGv;
-
-    public MonthViewCalendarAdapter() {
-
-    }
-
-    public MonthViewCalendarAdapter(GridView gv) {
-        this.mGv = gv;
-    }
-
     public void addItem(int year, int month, int day){
         items.add(new ListItem(year, month, day));
     }

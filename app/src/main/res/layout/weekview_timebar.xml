@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/weekview_timebar_format"
+    android:theme="@style/LightTheme"
+    android:layout_width="25dp"
+    android:layout_height="50dp"
+    android:gravity="center_vertical"
+    android:textColor="?attr/dayCharColor"
+    android:textStyle="normal"
+    android:background="?attr/calendarViewColor"
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    />

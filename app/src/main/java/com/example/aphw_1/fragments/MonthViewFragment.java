@@ -45,11 +45,11 @@ public class MonthViewFragment extends Fragment {
 
         // GridView 생성
         List<Integer> days = CalendarUtils.getDays(year, month); // 날자 데이터 로드
-        MonthViewCalendarAdapter adapt = new MonthViewCalendarAdapter(); // 뷰의 높이를 전달하여 커스텀 어댑터 객체 로드
+        MonthViewCalendarAdapter adapt = new MonthViewCalendarAdapter();
         for (Integer day : days){
             adapt.addItem(year, month, day); // 어댑터에 데이터 추가
         }
-
+        
         calendar.setAdapter(adapt); // 어댑터를 그리드 뷰 객체에 연결
 
         calendar.setOnItemClickListener(new AdapterView.OnItemClickListener() {   // 이 함수를 통해 이벤트 리스너 등록
