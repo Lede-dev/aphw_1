@@ -18,6 +18,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.aphw_1.adapters.MonthViewPagerAdapter;
+import com.example.aphw_1.adapters.WeekViewPagerAdapter;
 import com.example.aphw_1.data.CurrentTime;
 import com.example.aphw_1.fragments.WeekViewFragment;
 import com.example.aphw_1.utils.CalendarUtils;
@@ -164,10 +165,23 @@ public class MainActivity extends AppCompatActivity {
 
         // 출력할 뷰가 WeekView 일 때
         else if (view == FragmentID.WEEK.getID()){
-            // 최초 실행할 fragment
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new WeekViewFragment()).commit();
 
+            // pager adapter 객체 설정
+            ViewPager2 vpPager = findViewById(R.id.vpPager); // pager 로드
+            FragmentStateAdapter adapter = new WeekViewPagerAdapter(this); // pager adapter 로드
+            vpPager.setAdapter(adapter); // pager와 adapter를 연결
 
+            // 출력할 페이지를 현재 달에 맞는 페이지로 설정
+            vpPager.setCurrentItem(month);
+
+            // pager callback
+            vpPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    currentTime.setMonth(position); // 현재 월을 저장
+                    myToolbar.setTitle(currentTime.getYear() + "년 " + (currentTime.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
+                }
+            });
         }
 
         /* 변경됨
