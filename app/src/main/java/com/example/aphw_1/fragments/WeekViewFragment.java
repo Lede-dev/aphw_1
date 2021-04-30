@@ -14,17 +14,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.aphw_1.MainActivity;
+import com.example.aphw_1.adapters.MonthViewCalendarAdapter;
+import com.example.aphw_1.adapters.WeekViewCalendarAdapter;
 import com.example.aphw_1.adapters.WeekViewGridAdapter;
 import com.example.aphw_1.R;
 import com.example.aphw_1.data.ClickedView;
+import com.example.aphw_1.utils.CalendarUtils;
+
+import java.util.List;
 
 public class WeekViewFragment extends Fragment {
 
     private int year;
     private int month;
-    private static View tempView;
-    private static View tempView2;
-    private static View tempView3;
+
 
     public WeekViewFragment(int year, int month) {
         this.year = year;
@@ -49,6 +52,12 @@ public class WeekViewFragment extends Fragment {
 
         // 그리드뷰에 어댑터 연결
         grid.setAdapter(gridAdapter);
+
+        List<Integer> days = CalendarUtils.getDays(year, month); // 날자 데이터 로드
+        MonthViewCalendarAdapter adapt = new MonthViewCalendarAdapter();
+        for (Integer day : days){
+            adapt.addItem(year, month, day); // 어댑터에 데이터 추가
+        }
 
 
         TextView[] dayBar = new TextView[7];
