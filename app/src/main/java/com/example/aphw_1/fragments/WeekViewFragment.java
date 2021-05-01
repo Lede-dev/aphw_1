@@ -27,11 +27,13 @@ public class WeekViewFragment extends Fragment {
 
     private int year;
     private int month;
+    private int position;
 
 
-    public WeekViewFragment(int year, int month) {
+    public WeekViewFragment(int year, int month, int position) {
         this.year = year;
         this.month = month;
+        this.position = position;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,6 +72,15 @@ public class WeekViewFragment extends Fragment {
         dayBar[4] = fragment.findViewById(R.id.daybar_thu); // 목요일
         dayBar[5] = fragment.findViewById(R.id.daybar_fri); // 금요일
         dayBar[6] = fragment.findViewById(R.id.daybar_sat); // 토요일
+
+
+        // dayBar에 추가할 날짜 로드
+        List<Integer> dayBar_days = CalendarUtils.getDays(year, month);
+
+        // dayBar에 날짜 배치
+        for (int i=0; i<7; i++){
+            dayBar[i].setText(Integer.toString(dayBar_days.get(7*position + i)));
+        }
 
         // 일요일 클릭
         dayBar[0].setOnClickListener(new View.OnClickListener(){

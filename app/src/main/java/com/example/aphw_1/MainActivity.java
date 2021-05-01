@@ -177,17 +177,13 @@ public class MainActivity extends AppCompatActivity {
             FragmentStateAdapter adapter = new WeekViewPagerAdapter(this); // pager adapter 로드
             vpPager.setAdapter(adapter); // pager와 adapter를 연결
 
-            // 출력할 페이지를 현재 달에 맞는 페이지로 설정
-            vpPager.setCurrentItem(month);
+            int day = Calendar.getInstance().get(Calendar.DATE); // 현재 날짜를 로드
+            int firstDayOfWeek = CalendarUtils.getFirstDay(year, month); // 현재 월의 첫번째 일을 로드
+            int page = (day + firstDayOfWeek)/7; // 출력할 페이지 계산
 
-            // pager callback
-            vpPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                @Override
-                public void onPageSelected(int position) {
-                    currentTime.setMonth(position); // 현재 월을 저장
-                    myToolbar.setTitle(currentTime.getYear() + "년 " + (currentTime.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
-                }
-            });
+            // 출력할 페이지를 현재 날짜에 맞는 페이지로 설정
+            vpPager.setCurrentItem(page);
+            
         }
 
         /* 변경됨

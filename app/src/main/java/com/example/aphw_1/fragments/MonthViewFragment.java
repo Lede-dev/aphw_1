@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.aphw_1.MainActivity;
 import com.example.aphw_1.R;
 import com.example.aphw_1.adapters.MonthViewCalendarAdapter;
+import com.example.aphw_1.data.ClickedView;
 import com.example.aphw_1.data.CurrentTime;
 import com.example.aphw_1.utils.CalendarUtils;
 
@@ -25,8 +26,6 @@ public class MonthViewFragment extends Fragment {
 
     private int year;
     private int month;
-
-    private static View tempView;
 
     /*
         출력할 년/월 정보를 입력하여 fragment 생성
@@ -69,10 +68,10 @@ public class MonthViewFragment extends Fragment {
 
                 Toast.makeText(MainActivity.getInstance(), year + "." + (month + 1) + "." + day, 0).show();      // toast message로 띄울 text
 
-                if (tempView == null) tempView = view; // 이전에 클릭한 뷰가 없다면 임시 뷰를 현재 뷰로 지정
-                tempView.setBackground(getResources().getDrawable(R.drawable.month_view_border_disable)); // 이전에 클릭한 뷰를 테두리 비활성화 상태로 변경
+                if (ClickedView.getClickedView() == null) ClickedView.setClickedView(view); // 이전에 클릭한 뷰가 없다면 임시 뷰를 현재 뷰로 지정
+                ClickedView.getClickedView().setBackground(getResources().getDrawable(R.drawable.month_view_border_disable)); // 이전에 클릭한 뷰를 테두리 비활성화 상태로 변경
                 view.setBackground(getResources().getDrawable(R.drawable.month_view_border_enable)); // 클릭한 일의 배경 색을 변경
-                tempView = view; // 클릭한 뷰를 임시 뷰로 지정
+                ClickedView.setClickedView(view); // 클릭한 뷰를 임시 뷰로 지정
             }
         });
 

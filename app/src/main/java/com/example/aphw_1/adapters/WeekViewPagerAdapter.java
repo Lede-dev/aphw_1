@@ -11,7 +11,7 @@ import com.example.aphw_1.fragments.WeekViewFragment;
 
 public class WeekViewPagerAdapter extends FragmentStateAdapter {
 
-    private static int NUM_ITEMS = 12;
+    private static int NUM_ITEMS = 6;
 
     public WeekViewPagerAdapter(FragmentActivity fa){
         super(fa);
@@ -23,7 +23,7 @@ public class WeekViewPagerAdapter extends FragmentStateAdapter {
 
         // 현재 년/월 로드
         CurrentTime currentTime = new CurrentTime();
-        return new WeekViewFragment(currentTime.getYear(), position); // 위치에 맞는 월(0 ~ 11 == 1월 ~ 12월)의 Fragment 객체를 생성
+        return new WeekViewFragment(currentTime.getYear(), currentTime.getMonth(), position); // 위치에 맞는 월(0 ~ 11 == 1월 ~ 12월)의 Fragment 객체를 생성
 
     }
 
