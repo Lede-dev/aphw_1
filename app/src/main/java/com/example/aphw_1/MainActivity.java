@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.example.aphw_1.adapters.MonthViewPagerAdapter;
 import com.example.aphw_1.adapters.WeekViewPagerAdapter;
 import com.example.aphw_1.data.CurrentTime;
+import com.example.aphw_1.fragments.MonthViewBarFragment;
+import com.example.aphw_1.fragments.WeekViewBarFragment;
 import com.example.aphw_1.fragments.WeekViewFragment;
 import com.example.aphw_1.utils.CalendarUtils;
 import com.example.aphw_1.utils.FragmentID;
@@ -29,8 +31,6 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
-
-    private static GridView calendarView;
 
     // 외부 class에서 사용하기 위한 Instance 반환
     public static MainActivity getInstance(){
@@ -144,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
         // 출력할 뷰가 MonthView 일 때
         if (view == FragmentID.MONTH.getID()){
 
+            // Bar Fragment 생성
+            getSupportFragmentManager().beginTransaction().add(R.id.bar_container, new MonthViewBarFragment()).commit();
+
             // pager adapter 객체 설정
             ViewPager2 vpPager = findViewById(R.id.vpPager); // pager 로드
             FragmentStateAdapter adapter = new MonthViewPagerAdapter(this); // pager adapter 로드
@@ -165,6 +168,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 출력할 뷰가 WeekView 일 때
         else if (view == FragmentID.WEEK.getID()){
+
+            // Bar Fragment 생성
+            getSupportFragmentManager().beginTransaction().add(R.id.bar_container, new WeekViewBarFragment()).commit();
 
             // pager adapter 객체 설정
             ViewPager2 vpPager = findViewById(R.id.vpPager); // pager 로드

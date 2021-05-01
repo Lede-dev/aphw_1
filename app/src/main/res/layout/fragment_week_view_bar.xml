@@ -1,36 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--    match_parent로  길이를 모두 채움-->
-<!--    vertical로 수직 배열-->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:theme="@style/LightTheme"
-    android:background="?attr/backgroundColor"
-    android:textStyle="normal"
-    android:id="@+id/fragment_container"
-    >
-
-    <!-- 툴 바 추가 -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:titleTextColor="?attr/titleColor"
-        android:elevation="4dp"
-
-        />
-
-    <!--
-        LinearLayout을 horizontal로 수평 배열
-        TextView로 주 표시
-    -->
+    tools:context=".fragments.WeekViewBarFragment">
 
     <LinearLayout
         android:theme="@style/LightTheme"
@@ -38,8 +11,17 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="?attr/weekBarColor"
-        android:id="@+id/bar_container"
         >
+
+        <TextView
+
+            android:id="@+id/bar_blank"
+            android:layout_width="25dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="?attr/backgroundColor"
+
+            />
 
         <TextView
 
@@ -128,9 +110,4 @@
 
     </LinearLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vpPager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-</LinearLayout>
+</FrameLayout>
