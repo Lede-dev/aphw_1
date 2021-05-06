@@ -56,11 +56,54 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("year", currentTime.getYear());
         intent.putExtra("month", currentTime.getMonth());
 
+        int view = getIntent().getIntExtra("view", FragmentID.MONTH.getID()); // 현재 보고있는 fragment의 ID를 반환
 
         switch (item.getItemId()) {
-            // 설정 아이콘 클릭 시
-            case R.id.action_settings:
-                Toast.makeText(getApplicationContext(), "action_settings", Toast.LENGTH_SHORT).show();
+            //이전 년/월로 이동
+            case R.id.left_button:
+
+                if (view == FragmentID.MONTH.getID()) {
+                    intent.putExtra("year", currentTime.getYear()-1);
+                    intent.putExtra("month", currentTime.getMonth());
+                    intent.putExtra("view", FragmentID.MONTH.getID());
+                }
+                else if (view == FragmentID.WEEK.getID()) {
+                    int month = currentTime.getMonth() - 1;
+                    int year = currentTime.getYear();
+                    if (month < 0) {
+                        year--;
+                        month = 11;
+                    }
+                    intent.putExtra("year", year);
+                    intent.putExtra("month", month);
+                    intent.putExtra("view", FragmentID.WEEK.getID());
+                }
+                startActivity(intent); // 새로운 Activity 시작
+                finish(); // 기존 Activity 종료
+                Toast.makeText(getApplicationContext(), "prev", Toast.LENGTH_SHORT).show();
+                return true;
+
+            // 이후 년/월로 이동
+            case R.id.right_button:
+                if (view == FragmentID.MONTH.getID()) {
+                    intent.putExtra("year", currentTime.getYear()+1);
+                    intent.putExtra("month", currentTime.getMonth());
+                    intent.putExtra("view", FragmentID.MONTH.getID());
+                }
+                else if (view == FragmentID.WEEK.getID()) {
+                    int month = currentTime.getMonth() + 1;
+                    int year = currentTime.getYear();
+                    if (month > 11) {
+                        year++;
+                        month = 0;
+                    }
+                    intent.putExtra("year", year);
+                    intent.putExtra("month", month);
+                    intent.putExtra("view", FragmentID.WEEK.getID());
+                }
+                startActivity(intent); // 새로운 Activity 시작
+                finish(); // 기존 Activity 종료
+                Toast.makeText(getApplicationContext(), "next", Toast.LENGTH_SHORT).show();
                 return true;
 
             // 월간 달력 전환

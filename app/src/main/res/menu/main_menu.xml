@@ -2,11 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- 설정 아이콘 -->
+    <!-- 이동 버튼 -->
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/left_button"
         android:title="@string/action_settings"
-        android:icon="@drawable/ic_settings_black_24dp"
+        android:icon="@drawable/ic_baseline_arrow_back_ios_24"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/right_button"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_baseline_arrow_forward_ios_24"
         app:showAsAction="ifRoom"/>
 
     <!-- 메뉴 -->
