@@ -64,7 +64,7 @@ public class MonthViewCalendarAdapter extends BaseAdapter {
         view.setHeight(CalendarUtils.getCalenderHeight()/6);
 
         if (position+1 < firstDayOfMonth || firstDayOfMonth+daysOfMonth < position+2){ // 입력받은 일이 해당 달의 범위를 벗어난다면 실행
-            view.setBackgroundColor(Color.parseColor("#b0916f")); // 배경 색을 변경
+            view.setBackgroundColor(Color.parseColor("#888888")); // 배경 색을 변경
             view.setTextColor(Color.parseColor("#404040")); // 글자 색을 회색으로 변경
             view.setText(Integer.toString(listItem.getDay()));
             return convertView;
