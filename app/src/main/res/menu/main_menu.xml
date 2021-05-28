@@ -2,18 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+    <item
+        android:id="@+id/calendar"
+        android:title="일정추가"
+        android:icon="@drawable/ic_baseline_add_circle_outline_24"
+        app:showAsAction="always"/>
+
     <!-- 이동 버튼 -->
     <item
         android:id="@+id/left_button"
         android:title="@string/action_settings"
         android:icon="@drawable/ic_baseline_arrow_back_ios_24"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/right_button"
         android:title="@string/action_settings"
         android:icon="@drawable/ic_baseline_arrow_forward_ios_24"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <!-- 메뉴 -->
     <item

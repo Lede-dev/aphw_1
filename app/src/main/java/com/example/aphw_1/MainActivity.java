@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.aphw_1.adapters.MonthViewPagerAdapter;
 import com.example.aphw_1.adapters.WeekViewPagerAdapter;
+import com.example.aphw_1.data.ClickedView;
 import com.example.aphw_1.data.CurrentTime;
 import com.example.aphw_1.fragments.MonthViewBarFragment;
 import com.example.aphw_1.fragments.WeekViewBarFragment;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         CurrentTime currentTime = new CurrentTime(); // 현재 년/월 로드
         Intent intent = new Intent(this, MainActivity.class);  // 인텐트 생성
+        Intent intent2 = new Intent(this, Calendar_Setting_activity.class);  // 인텐트 생성
 
         // intent에 전달할 년/월 입력
         intent.putExtra("year", currentTime.getYear());
@@ -119,6 +121,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent); // 새로운 Activity 시작
                 finish(); // 기존 Activity 종료
                 return true;
+
+
+            case R.id.calendar:
+
+                if (ClickedView.getClickedView() != null) {
+
+                    startActivity(intent2); // 새로운 Activity 시작
+                    finish(); // 기존 Activity 종료
+                    return true;
+                }
+
+                if(ClickedView.getClickedView() == null){
+
+                    startActivity(intent); // 새로운 Activity 시작
+                    finish(); // 기존 Activity 종료
+
+                }
+
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -226,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
             // 출력할 페이지를 현재 날짜에 맞는 페이지로 설정
             vpPager.setCurrentItem(page);
-            
+
         }
 
         /* 변경됨
