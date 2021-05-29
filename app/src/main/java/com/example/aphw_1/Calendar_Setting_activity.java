@@ -68,10 +68,10 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_setting_activity);
 
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
         CurrentTime currentTime = new CurrentTime(); // 현재 년/월 로드
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -84,8 +84,6 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
 
         int firstDayOfMonth = CalendarUtils.getFirstDay(currentTime.getYear(), currentTime.getMonth()); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
         int position = currentTime.getPosition();
-
-
         int year = currentTime.getYear();
         int month = currentTime.getMonth();
 
@@ -97,14 +95,19 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
             TextView cal = findViewById(R.id.date);  // 아이디에 해당하는 텍스트 개체를 찾음
             cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 ");
 
-            TimePicker timePicker1 = findViewById(R.id.timepicker1);
 
+            // 시작 시간을 조절
+            TimePicker timePicker1 = findViewById(R.id.timepicker1);
             timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
                 @Override
                 public void onTimeChanged(TimePicker view, int hour1, int min1) {
 
-                    TimePicker timePicker2 = findViewById(R.id.timepicker2);
 
+                    cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 ");
+
+
+                    // 종료 시간을 조절
+                    TimePicker timePicker2 = findViewById(R.id.timepicker2);
                     timePicker2.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
                         @Override
                         public void onTimeChanged(TimePicker view, int hour2, int min2) {
@@ -133,13 +136,42 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
             TextView cal = findViewById(R.id.date);  // 아이디에 해당하는 텍스트 개체를 찾음
             cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + position + "시 " + "~ " + time + "시 ");
 
+
+            // 시작 시간을 조절
+            TimePicker timePicker1 = findViewById(R.id.timepicker1);
+            timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                @Override
+                public void onTimeChanged(TimePicker view, int hour1, int min1) {
+
+
+                    cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 ");
+
+
+                    // 종료 시간을 조절
+                    TimePicker timePicker2 = findViewById(R.id.timepicker2);
+                    timePicker2.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                        @Override
+                        public void onTimeChanged(TimePicker view, int hour2, int min2) {
+
+
+                            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 " + "~ " + hour2 + "시 " + min2 + "분 " ); // 텍스트를 입력
+
+                        }
+                    });
+
+                }
+            });
+
+
+
+
         }
 
 
 
+        // 취소 버튼 클릭시 Month 뷰로 이동
         Button backBtn = findViewById(R.id.cancle); // ID로부터 대응되는 객체를 찾음
         backBtn.setOnClickListener(new View.OnClickListener() {  // 이 함수를 통해 이벤트 리스너 등록
-
             @Override
             public void onClick(View v) {
 
@@ -149,6 +181,7 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
             }
         });
 
+
        mDate = (EditText)findViewById(R.id.date);
        mTitle = (EditText)findViewById(R.id.title);
        mLocation = (EditText)findViewById(R.id.location);
@@ -157,7 +190,7 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
 
         mDbHelper = new DBHelper(this);
 
-
+        // 저장 버튼을 누르면 데이터베이스에 저장
         Button saveBtn = findViewById(R.id.save);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,6 +206,7 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
 
     private void getAddress() {
 
+        // 주소를 입력하면 loc에 스트링으로 저장
         et = (EditText)findViewById(R.id.location);
         loc = et.getText().toString();
 
@@ -188,6 +222,7 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
                         bestResult.getLatitude(),
                         bestResult.getLongitude()));
 
+                // 위도와 경도를 따로 저장
                 a = bestResult.getLatitude();
                 b = bestResult.getLongitude();
 
@@ -204,7 +239,7 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-
+        // 주소 찾기 버튼을 누르면 입력한 주소의 위도, 경도로 마커와 카메라 이동
         Button getAddressButton = findViewById(R.id.find);
         getAddressButton.setOnClickListener(new View.OnClickListener() {
 
@@ -226,6 +261,7 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
 
      private void insertRecord() {
 
+            // 입력된 내용을 스트링으로 보냄
             EditText Date = (EditText)findViewById(R.id.date);
             EditText Title = (EditText)findViewById(R.id.title);
             EditText Location = (EditText)findViewById(R.id.location);

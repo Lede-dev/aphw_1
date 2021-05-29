@@ -218,6 +218,8 @@ public class WeekViewFragment extends Fragment {
                     if (clickedPosition / 7 == i) {
                         clickedPosition = i;
                     }}
+
+                // +100을 하여 100보다 작으면 Month 뷰 포지션, 높으면 Week 뷰 포지션
                 currentTime.setPosition(clickedPosition+100);
 
             }

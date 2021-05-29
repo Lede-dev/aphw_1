@@ -32,7 +32,7 @@ public final class CalendarData {
                 KEY_DATE + TEXT_TYPE + COMMA_SEP +
                 KEY_TITLE + TEXT_TYPE + COMMA_SEP +
                 KEY_LOCATION + TEXT_TYPE + COMMA_SEP +
-                KEY_NOTE + TEXT_TYPE + COMMA_SEP + " )";
+                KEY_NOTE + TEXT_TYPE + " )";
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 
