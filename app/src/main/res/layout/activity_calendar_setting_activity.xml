@@ -17,6 +17,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="false"
+                    android:id="@+id/date"
+                    android:hint="시간" />
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -26,16 +33,17 @@
                     android:focusableInTouchMode="true"
                     android:stretchColumns="*">
 
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="제목" />
+
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
                         android:id="@+id/title"
-                        android:text="제목" />
+                        android:hint="제목" />
                 </LinearLayout>
 
 
@@ -57,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:timePickerMode="spinner"
-                        android:id="@+id/timepiker1"/>
+                        android:id="@+id/timepicker1"/>
 
                 </LinearLayout>
 

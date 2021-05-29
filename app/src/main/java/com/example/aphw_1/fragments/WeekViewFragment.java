@@ -19,6 +19,7 @@ import com.example.aphw_1.adapters.WeekViewCalendarAdapter;
 import com.example.aphw_1.adapters.WeekViewGridAdapter;
 import com.example.aphw_1.R;
 import com.example.aphw_1.data.ClickedView;
+import com.example.aphw_1.data.CurrentTime;
 import com.example.aphw_1.utils.CalendarUtils;
 
 import java.util.List;
@@ -27,13 +28,17 @@ public class WeekViewFragment extends Fragment {
 
     private int year;
     private int month;
-    private int position;
+    private static int position;
 
 
     public WeekViewFragment(int year, int month, int position) {
         this.year = year;
         this.month = month;
         this.position = position;
+    }
+
+    public static int getPosition(){
+        return position;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,10 +82,13 @@ public class WeekViewFragment extends Fragment {
         // dayBar에 추가할 날짜 로드
         List<Integer> dayBar_days = CalendarUtils.getDays(year, month);
 
+
         // dayBar에 날짜 배치
         for (int i=0; i<7; i++){
             dayBar[i].setText(Integer.toString(dayBar_days.get(7*position + i)));
         }
+
+
 
         // 일요일 클릭
         dayBar[0].setOnClickListener(new View.OnClickListener(){
@@ -177,10 +185,10 @@ public class WeekViewFragment extends Fragment {
 
             @SuppressLint("WrongConstant")
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int clickedPosition, long id) {
 
 
-                Toast.makeText(MainActivity.getInstance(), "position=" + position , 0).show();      // toast message로 띄울 text
+                Toast.makeText(MainActivity.getInstance(), "position=" + clickedPosition , 0).show();      // toast message로 띄울 text
 
                 if (ClickedView.getClickedView() == null) ClickedView.setClickedView(view); // 이전에 클릭한 뷰가 없다면 임시 뷰를 현재 뷰로 지정
 
@@ -191,14 +199,33 @@ public class WeekViewFragment extends Fragment {
                 // 격자 클릭시 해당되는 날짜 배경색 변경
                 if (ClickedView.getWeekView_dayBar() == null) ClickedView.setWeekView_dayBar(dayBar[0]); // 이전에 클릭한 뷰에 매칭되는 뷰가 없다면 설정
 
-                int dayBarPosition = position % 7;
+                int dayBarPosition = clickedPosition % 7;
 
                 ClickedView.getWeekView_dayBar().setBackground(getResources().getDrawable(R.drawable.date_view_border)); // 이전에 클릭한 뷰에 매칭되는 뷰 테두리 비활성화 상태로 변경
                 dayBar[dayBarPosition].setBackground(getResources().getDrawable(R.drawable.month_view_border_enable)); // 클릭한 뷰에 매칭되는 뷰 테두리 설정
                 ClickedView.setWeekView_dayBar(dayBar[dayBarPosition]); // 이전에 클릭한 뷰에 매칭되는 뷰를 현재 클릭한 뷰에 매칭되는 뷰로 설정
 
+
+                CurrentTime currentTime = new CurrentTime();
+
+
+                List<Integer> dayBar_days = CalendarUtils.getDays(year, month);
+                int day = dayBar_days.get((position*7) + (clickedPosition%7));
+
+                currentTime.setday(day);
+
+                for(int i = 0; i < 24; i++) {
+                    if (clickedPosition / 7 == i) {
+                        clickedPosition = i;
+                    }}
+                currentTime.setPosition(clickedPosition+100);
+
             }
+
+
         });
+
+
 
         return fragment;
 

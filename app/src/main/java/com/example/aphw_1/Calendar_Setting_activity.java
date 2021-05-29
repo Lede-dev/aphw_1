@@ -1,8 +1,11 @@
 package com.example.aphw_1;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,10 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.aphw_1.adapters.MonthViewCalendarAdapter;
+import com.example.aphw_1.adapters.MonthViewPagerAdapter;
+import com.example.aphw_1.adapters.WeekViewPagerAdapter;
 import com.example.aphw_1.data.CurrentTime;
+import com.example.aphw_1.fragments.MonthViewBarFragment;
 import com.example.aphw_1.fragments.MonthViewFragment;
+import com.example.aphw_1.fragments.WeekViewBarFragment;
 import com.example.aphw_1.utils.CalendarUtils;
 import com.example.aphw_1.utils.FragmentID;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,6 +45,17 @@ import java.util.Locale;
 
 public class Calendar_Setting_activity extends AppCompatActivity implements OnMapReadyCallback {
 
+
+    final static String TAG="SQLITEDBTEST";
+
+    EditText mDate;
+    EditText mTitle;
+    EditText mLocation;
+    EditText mNote;
+
+    private DBHelper mDbHelper;
+
+
     String loc;
     EditText et;
     double a;
@@ -50,8 +69,6 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
         setContentView(R.layout.activity_calendar_setting_activity);
 
 
-
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -63,26 +80,60 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
         intent.putExtra("year", currentTime.getYear());
         intent.putExtra("month", currentTime.getMonth());
 
+
+
+        int firstDayOfMonth = CalendarUtils.getFirstDay(currentTime.getYear(), currentTime.getMonth()); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
+        int position = currentTime.getPosition();
+
+
         int year = currentTime.getYear();
         int month = currentTime.getMonth();
-        MonthViewCalendarAdapter monthViewCalendarAdapter = new MonthViewCalendarAdapter();
-        int day = 0;
 
-        TextView cal = findViewById(R.id.title);  // 아이디에 해당하는 텍스트 개체를 찾음
-        cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 ");
+        // Month에서 일정추가
+        if (position < 100){
 
-        TimePicker timePicker = findViewById(R.id.timepiker1);
+            int day = position - firstDayOfMonth + 2; // 클릭한 일을 계산
 
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hour, int min) {
+            TextView cal = findViewById(R.id.date);  // 아이디에 해당하는 텍스트 개체를 찾음
+            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 ");
 
-                cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour + "시 " + min + "분 " ); // 텍스트를 입력
+            TimePicker timePicker1 = findViewById(R.id.timepicker1);
 
-            }
-        });
+            timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                @Override
+                public void onTimeChanged(TimePicker view, int hour1, int min1) {
+
+                    TimePicker timePicker2 = findViewById(R.id.timepicker2);
+
+                    timePicker2.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                        @Override
+                        public void onTimeChanged(TimePicker view, int hour2, int min2) {
 
 
+                            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 " + "~ " + hour2 + "시 " + min2 + "분 " ); // 텍스트를 입력
+
+                        }
+                    });
+
+                }
+            });
+
+        }
+
+        // Week에서 일정추가
+        else if (position >= 100){
+
+            position = position - 100;
+
+            int day = currentTime.getday();
+
+            int time = position+1;
+            if(time == 24) time = 0;
+
+            TextView cal = findViewById(R.id.date);  // 아이디에 해당하는 텍스트 개체를 찾음
+            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + position + "시 " + "~ " + time + "시 ");
+
+        }
 
 
 
@@ -93,8 +144,25 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
             public void onClick(View v) {
 
                 startActivity(intent); // 새 액티비티의 인스턴스를 시작
-                finish(); // 종료
+                finish(); // 종료                                                             
 
+            }
+        });
+
+       mDate = (EditText)findViewById(R.id.date);
+       mTitle = (EditText)findViewById(R.id.title);
+       mLocation = (EditText)findViewById(R.id.location);
+       mNote = (EditText)findViewById(R.id.note);
+
+
+        mDbHelper = new DBHelper(this);
+
+
+        Button saveBtn = findViewById(R.id.save);
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                insertRecord();
             }
         });
 
@@ -154,4 +222,18 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
 
 
     }
+
+
+     private void insertRecord() {
+
+            EditText Date = (EditText)findViewById(R.id.date);
+            EditText Title = (EditText)findViewById(R.id.title);
+            EditText Location = (EditText)findViewById(R.id.location);
+            EditText Note = (EditText)findViewById(R.id.note);
+
+            mDbHelper.insertUserBySQL(Date.getText().toString(),Title.getText().toString(), Location.getText().toString(), Note.getText().toString());
+
+         }
+
+
 }

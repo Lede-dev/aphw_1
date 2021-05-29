@@ -8,14 +8,37 @@ public class CurrentTime {
 
     private static int year;
     private static int month;
+    private static int position;
+    private static int day;
 
-    public CurrentTime(int year, int month){
+
+    public CurrentTime(int year, int month, int position, int day){
         this.year = year;
         this.month = month;
+        this.position = position;
+        this.day = day;
+
     }
 
     public CurrentTime(){
 
+    }
+
+    public void setday(int day) {
+        CurrentTime.day = day;
+    }
+
+    public int getday() {
+        return CurrentTime.day;
+    }
+
+
+    public void setPosition(int position) {
+        CurrentTime.position = position;
+    }
+
+    public int getPosition() {
+        return CurrentTime.position;
     }
 
     public void setYear(int year) {

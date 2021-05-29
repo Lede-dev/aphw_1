@@ -192,9 +192,10 @@ public class MainActivity extends AppCompatActivity {
 
         int year = intent.getIntExtra("year", Calendar.getInstance().get(Calendar.YEAR));  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 현재 년도를 리턴
         int month = intent.getIntExtra("month", Calendar.getInstance().get(Calendar.MONTH));  // 값을 읽음, 해당 되는 이름의 벨류가 없을 때 현재 달을 리턴
-
+        int p = 0;
+        int WDp = 0;
         // 년/월 정보를 담고있는 CurrentTime 객체 생성
-        CurrentTime currentTime = new CurrentTime(year, month);
+        CurrentTime currentTime = new CurrentTime(year, month, p, WDp);
 
         // 툴 바를 앱 바로 설정
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar); // 툴 바 로드

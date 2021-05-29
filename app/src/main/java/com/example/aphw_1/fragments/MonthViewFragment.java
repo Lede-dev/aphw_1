@@ -72,6 +72,8 @@ public class MonthViewFragment extends Fragment {
                 ClickedView.getClickedView().setBackground(getResources().getDrawable(R.drawable.month_view_border_disable)); // 이전에 클릭한 뷰를 테두리 비활성화 상태로 변경
                 view.setBackground(getResources().getDrawable(R.drawable.month_view_border_enable)); // 클릭한 일의 배경 색을 변경
                 ClickedView.setClickedView(view); // 클릭한 뷰를 임시 뷰로 지정
+
+                currentTime.setPosition(position);
             }
         });
 
