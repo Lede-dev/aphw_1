@@ -216,11 +216,7 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
             List<Address> addresses = geocoder.getFromLocationName(loc,1);
             if (addresses.size() >0) {
                 Address bestResult = (Address) addresses.get(0);
-
-
-                et.setText(String.format("[ %s , %s ]",
-                        bestResult.getLatitude(),
-                        bestResult.getLongitude()));
+                
 
                 // 위도와 경도를 따로 저장
                 a = bestResult.getLatitude();
