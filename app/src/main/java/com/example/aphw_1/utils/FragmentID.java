@@ -12,4 +12,13 @@ public enum FragmentID {
     public int getID(){
         return id;
     }
+
+    public static FragmentID getFragmentId(int id) {
+        for (FragmentID fid : values()) {
+            if (fid.getID() == id) {
+                return fid;
+            }
+        }
+        return null;
+    }
 }

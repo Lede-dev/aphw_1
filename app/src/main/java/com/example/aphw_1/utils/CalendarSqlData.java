@@ -1,10 +1,10 @@
-package com.example.aphw_1;
+package com.example.aphw_1.utils;
 
 
 
 import android.provider.BaseColumns;
 
-public final class CalendarData {
+public final class CalendarSqlData {
 
 
     public static final String DB_NAME="Calendar.db";
@@ -15,11 +15,10 @@ public final class CalendarData {
 
     // To prevent someone from accidentally instantiating the contract class,
     // make the constructor private.
-    private CalendarData() {}
+    private CalendarSqlData() {}
 
     /* Inner class that defines the table contents */
     public static class Calendar implements BaseColumns {
-
 
         public static final String TABLE_NAME="Calender";
         public static final String KEY_DATE = "Date";
@@ -33,8 +32,8 @@ public final class CalendarData {
                 KEY_TITLE + TEXT_TYPE + COMMA_SEP +
                 KEY_LOCATION + TEXT_TYPE + COMMA_SEP +
                 KEY_NOTE + TEXT_TYPE + " )";
-        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
+        public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     }
 }

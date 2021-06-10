@@ -5,8 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.aphw_1.data.CurrentTime;
-import com.example.aphw_1.fragments.MonthViewFragment;
+import com.example.aphw_1.data.CalendarData;
 import com.example.aphw_1.fragments.WeekViewFragment;
 
 public class WeekViewPagerAdapter extends FragmentStateAdapter {
@@ -22,8 +21,8 @@ public class WeekViewPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
 
         // 현재 년/월 로드
-        CurrentTime currentTime = new CurrentTime();
-        return new WeekViewFragment(currentTime.getYear(), currentTime.getMonth(), position); // 위치에 맞는 월(0 ~ 11 == 1월 ~ 12월)의 Fragment 객체를 생성
+        CalendarData calendarData = new CalendarData();
+        return new WeekViewFragment(calendarData.getYear(), calendarData.getMonth(), position); // 위치에 맞는 월(0 ~ 11 == 1월 ~ 12월)의 Fragment 객체를 생성
 
     }
 

@@ -16,9 +16,10 @@ import com.example.aphw_1.MainActivity;
 import com.example.aphw_1.R;
 import com.example.aphw_1.adapters.MonthViewCalendarAdapter;
 import com.example.aphw_1.data.ClickedView;
-import com.example.aphw_1.data.CurrentTime;
+import com.example.aphw_1.data.CalendarData;
 import com.example.aphw_1.utils.CalendarUtils;
 
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -57,10 +58,8 @@ public class MonthViewFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                CurrentTime currentTime = new CurrentTime();
-
-                int firstDayOfMonth = CalendarUtils.getFirstDay(currentTime.getYear(), currentTime.getMonth()); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
-                int daysOfMonth = CalendarUtils.getDay(currentTime.getYear(), currentTime.getMonth()); // 해당 월의 총 일 수
+                int firstDayOfMonth = CalendarUtils.getFirstDay(CalendarData.getYear(), CalendarData.getMonth()); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
+                int daysOfMonth = CalendarUtils.getDay(CalendarData.getYear(), CalendarData.getMonth()); // 해당 월의 총 일 수
 
                 int day = position - firstDayOfMonth + 2; // 클릭한 일을 계산
 
@@ -73,7 +72,9 @@ public class MonthViewFragment extends Fragment {
                 view.setBackground(getResources().getDrawable(R.drawable.month_view_border_enable)); // 클릭한 일의 배경 색을 변경
                 ClickedView.setClickedView(view); // 클릭한 뷰를 임시 뷰로 지정
 
-                currentTime.setPosition(position);
+                CalendarData.setPosition(position); // 클릭한 포지션을 저장
+                CalendarData.setDay(day); // 클릭한 일을 저장
+                CalendarData.setHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)); // 현재 시간을 저장
             }
         });
 

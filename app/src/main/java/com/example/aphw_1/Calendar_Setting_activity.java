@@ -1,14 +1,11 @@
 package com.example.aphw_1;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,20 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import com.example.aphw_1.adapters.MonthViewCalendarAdapter;
-import com.example.aphw_1.adapters.MonthViewPagerAdapter;
-import com.example.aphw_1.adapters.WeekViewPagerAdapter;
-import com.example.aphw_1.data.CurrentTime;
-import com.example.aphw_1.fragments.MonthViewBarFragment;
-import com.example.aphw_1.fragments.MonthViewFragment;
-import com.example.aphw_1.fragments.WeekViewBarFragment;
-import com.example.aphw_1.utils.CalendarUtils;
-import com.example.aphw_1.utils.FragmentID;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationServices;
+import com.example.aphw_1.data.CalendarData;
+import com.example.aphw_1.utils.DBHelper;
+import com.example.aphw_1.utils.EditorState;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,176 +26,105 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 public class Calendar_Setting_activity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static DBHelper dbHelper;
 
-    final static String TAG="SQLITEDBTEST";
+    double lat;
+    double lng;
 
-    EditText mDate;
-    EditText mTitle;
-    EditText mLocation;
-    EditText mNote;
-
-    private DBHelper mDbHelper;
-
-
-    String loc;
-    EditText et;
-    double a;
-    double b;
-
-
+    public Intent createIntent() {
+        Intent intent = getIntent();
+        intent.setClass(this, MainActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_setting_activity);
 
+        dbHelper = new DBHelper(this); // load database helper
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.schedule_toolbar); // 툴 바 로드
+        toolbar.setTitle(String.format("%d년 %d월 %d일", CalendarData.getYear(), (CalendarData.getMonth()+1), CalendarData.getDay())); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
+        setSupportActionBar(toolbar);
 
-        CurrentTime currentTime = new CurrentTime(); // 현재 년/월 로드
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        int year = CalendarData.getYear(); // 년
+        int month = CalendarData.getMonth(); // 월
+        int day = CalendarData.getDay(); // 일
+        int hour = CalendarData.getHour(); // 시간
 
+        TextView printDate = findViewById(R.id.title);
+        printDate.setText(String.format("%d년 %d월 %d일 %d시", year, month, day, hour));
 
-        intent.putExtra("year", currentTime.getYear());
-        intent.putExtra("month", currentTime.getMonth());
+        // 시작 시간을 조절
+        TimePicker startTime = findViewById(R.id.timepicker1);
+        startTime.setCurrentHour(hour);
+        startTime.setCurrentMinute(0);
 
+        // 종료 시간을 조절
+        TimePicker endTime = findViewById(R.id.timepicker2);
+        endTime.setCurrentHour(hour+1 > 23 ? 0 : hour+1);
+        endTime.setCurrentMinute(0);
 
-
-        int firstDayOfMonth = CalendarUtils.getFirstDay(currentTime.getYear(), currentTime.getMonth()); // 첫번째 일의 요일 1 ~ 7 (일 ~ 토)
-        int position = currentTime.getPosition();
-        int year = currentTime.getYear();
-        int month = currentTime.getMonth();
-
-        // Month에서 일정추가
-        if (position < 100){
-
-            int day = position - firstDayOfMonth + 2; // 클릭한 일을 계산
-
-            TextView cal = findViewById(R.id.date);  // 아이디에 해당하는 텍스트 개체를 찾음
-            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 ");
-
-
-            // 시작 시간을 조절
-            TimePicker timePicker1 = findViewById(R.id.timepicker1);
-            timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-                @Override
-                public void onTimeChanged(TimePicker view, int hour1, int min1) {
-
-
-                    cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 ");
-
-
-                    // 종료 시간을 조절
-                    TimePicker timePicker2 = findViewById(R.id.timepicker2);
-                    timePicker2.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-                        @Override
-                        public void onTimeChanged(TimePicker view, int hour2, int min2) {
-
-
-                            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 " + "~ " + hour2 + "시 " + min2 + "분 " ); // 텍스트를 입력
-
-                        }
-                    });
-
-                }
-            });
-
-        }
-
-        // Week에서 일정추가
-        else if (position >= 100){
-
-            position = position - 100;
-
-            int day = currentTime.getday();
-
-            int time = position+1;
-            if(time == 24) time = 0;
-
-            TextView cal = findViewById(R.id.date);  // 아이디에 해당하는 텍스트 개체를 찾음
-            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + position + "시 " + "~ " + time + "시 ");
-
-
-            // 시작 시간을 조절
-            TimePicker timePicker1 = findViewById(R.id.timepicker1);
-            timePicker1.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-                @Override
-                public void onTimeChanged(TimePicker view, int hour1, int min1) {
-
-
-                    cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 ");
-
-
-                    // 종료 시간을 조절
-                    TimePicker timePicker2 = findViewById(R.id.timepicker2);
-                    timePicker2.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-                        @Override
-                        public void onTimeChanged(TimePicker view, int hour2, int min2) {
-
-
-                            cal.setText(year+"년 "+ (month+1) +"월 " + day + "일 " + hour1 + "시 " + min1 + "분 " + "~ " + hour2 + "시 " + min2 + "분 " ); // 텍스트를 입력
-
-                        }
-                    });
-
-                }
-            });
-
-
-
-
-        }
-
-
-
-        // 취소 버튼 클릭시 Month 뷰로 이동
-        Button backBtn = findViewById(R.id.cancle); // ID로부터 대응되는 객체를 찾음
+        // 취소 버튼 클릭시 이전 화면으로 이동
+        Button backBtn = findViewById(R.id.cancle); // 이전 버튼 객체
         backBtn.setOnClickListener(new View.OnClickListener() {  // 이 함수를 통해 이벤트 리스너 등록
             @Override
             public void onClick(View v) {
-
-                startActivity(intent); // 새 액티비티의 인스턴스를 시작
-                finish(); // 종료                                                             
-
+                finish(); // 현재 액티비티 종료
             }
         });
-
-
-       mDate = (EditText)findViewById(R.id.date);
-       mTitle = (EditText)findViewById(R.id.title);
-       mLocation = (EditText)findViewById(R.id.location);
-       mNote = (EditText)findViewById(R.id.note);
-
-
-        mDbHelper = new DBHelper(this);
 
         // 저장 버튼을 누르면 데이터베이스에 저장
         Button saveBtn = findViewById(R.id.save);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                insertRecord();
+
+                // 데이터 추가
+                if (CalendarData.getEditorState() == EditorState.INSERT) {
+                    insertData();
+                }
+                
+                // 기존 데이터 업데이트
+                else {
+                    String id = " ";
+                    updateData(id);
+                }
+                
+                finish(); // 현재 액티비티 종료
             }
         });
 
+        // 삭제 버튼 클릭 시 일정 삭제
+        Button deleteBtn = findViewById(R.id.delete);
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CalendarData.getEditorState() == EditorState.UPDATE) {
+                    String id = "";
+                    deleteData(id);
+                }
+                finish(); // 현재 액티비티 종료
+            }
+        });
 
     }
 
-
-
-    private void getAddress() {
+    private void searchAddress() {
 
         // 주소를 입력하면 loc에 스트링으로 저장
-        et = (EditText)findViewById(R.id.location);
-        loc = et.getText().toString();
+        EditText et = (EditText)findViewById(R.id.location);
+        String loc = et.getText().toString();
 
 
         try {
@@ -216,12 +132,9 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
             List<Address> addresses = geocoder.getFromLocationName(loc,1);
             if (addresses.size() >0) {
                 Address bestResult = (Address) addresses.get(0);
-                
 
-                // 위도와 경도를 따로 저장
-                a = bestResult.getLatitude();
-                b = bestResult.getLongitude();
-
+                CalendarData.setLat(bestResult.getLatitude()); // 위도 저장
+                CalendarData.setLng(bestResult.getLongitude()); // 경도 저장
 
             }
         } catch (IOException e) {
@@ -230,7 +143,6 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
         }
 
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -241,31 +153,44 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
 
             @Override
             public void onClick(View view) {
-                getAddress();
-
-                LatLng find = new LatLng(a, b);
+                searchAddress();
+                LatLng find = new LatLng(CalendarData.getLat(), CalendarData.getLng());
                 googleMap.addMarker(new MarkerOptions().position(find));
                 // move the camera
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(find, 15));
 
-    }
-});
-
-
+            }
+        });
     }
 
+    // data 추가
+    private void insertData() {
+         CalendarData calendarData = new CalendarData();
 
-     private void insertRecord() {
+         String date = calendarData.getYear() + "." + calendarData.getMonth() + "." + calendarData.getDay() + "." + calendarData.getHour();
+         EditText title = (EditText)findViewById(R.id.title);
+         EditText location = (EditText)findViewById(R.id.location);
+         EditText note = (EditText)findViewById(R.id.note);
 
-            // 입력된 내용을 스트링으로 보냄
-            EditText Date = (EditText)findViewById(R.id.date);
-            EditText Title = (EditText)findViewById(R.id.title);
-            EditText Location = (EditText)findViewById(R.id.location);
-            EditText Note = (EditText)findViewById(R.id.note);
+         dbHelper.insertCalendarData(date,title.getText().toString(), location.getText().toString(), note.getText().toString());
 
-            mDbHelper.insertUserBySQL(Date.getText().toString(),Title.getText().toString(), Location.getText().toString(), Note.getText().toString());
+    }
 
-         }
+    // db 업데이트
+    private void updateData(String id) {
+        CalendarData calendarData = new CalendarData();
 
+        String date = calendarData.getYear() + "." + calendarData.getMonth() + "." + calendarData.getDay() + "." + calendarData.getHour();
+        EditText title = (EditText)findViewById(R.id.title);
+        EditText location = (EditText)findViewById(R.id.location);
+        EditText note = (EditText)findViewById(R.id.note);
+
+        dbHelper.updateCalendarData(id, date,title.getText().toString(), location.getText().toString(), note.getText().toString());
+    }
+    
+    // data 삭제
+    private void deleteData(String id) {
+        dbHelper.deleteCalendarData(id);
+    }
 
 }
