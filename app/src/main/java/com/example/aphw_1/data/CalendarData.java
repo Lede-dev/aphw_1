@@ -2,6 +2,7 @@ package com.example.aphw_1.data;
 
 
 import com.example.aphw_1.utils.EditorState;
+import com.example.aphw_1.utils.FragmentID;
 
 /*
     MainActivity 외부에서도 년/월 정보를 쉽게 불러오기 위하여 기능을 분리
@@ -14,6 +15,9 @@ public class CalendarData {
     private static int hour = 0; // 시간
     private static int minute = 0; // 분
 
+    private static int endHour = 0; // 일정 종료 시간
+    private static int endMinute = 0; // 일정 종료 분
+
     private static int position = 0; // 뷰 클릭 포지션
     private static int page = 0; // 페이저 페이지
 
@@ -22,6 +26,8 @@ public class CalendarData {
 
     private static EditorState editorState = EditorState.INSERT; // INSERT - UPDATE
     private static String id = ""; // database ID
+
+    private static FragmentID fragmentID;
 
     public static void setDay(int day) {
         CalendarData.day = day;
@@ -105,5 +111,29 @@ public class CalendarData {
 
     public static void setId(String id) {
         CalendarData.id = id;
+    }
+
+    public static int getEndHour() {
+        return endHour;
+    }
+
+    public static void setEndHour(int endHour) {
+        CalendarData.endHour = endHour;
+    }
+
+    public static int getEndMinute() {
+        return endMinute;
+    }
+
+    public static void setEndMinute(int endMinute) {
+        CalendarData.endMinute = endMinute;
+    }
+
+    public static FragmentID getFragmentID() {
+        return fragmentID;
+    }
+
+    public static void setFragmentID(FragmentID fragmentID) {
+        CalendarData.fragmentID = fragmentID;
     }
 }

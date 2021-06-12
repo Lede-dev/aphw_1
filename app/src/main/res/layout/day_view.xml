@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dayView_format"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:theme="@style/LightTheme"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:textColor="?attr/dayCharColor"
     android:textStyle="normal"
+    android:text=" "
     android:background="?attr/calendarViewColor"
-    android:textAppearance="?android:attr/textAppearanceLarge"
 
     />
+

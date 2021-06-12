@@ -1,26 +1,40 @@
 package com.example.aphw_1.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.aphw_1.Calendar_Setting_activity;
 import com.example.aphw_1.MainActivity;
 import com.example.aphw_1.R;
 import com.example.aphw_1.adapters.MonthViewCalendarAdapter;
 import com.example.aphw_1.data.ClickedView;
 import com.example.aphw_1.data.CalendarData;
+import com.example.aphw_1.utils.CalendarSqlData;
 import com.example.aphw_1.utils.CalendarUtils;
+import com.example.aphw_1.utils.DBHelper;
+import com.example.aphw_1.utils.EditorState;
+import com.example.aphw_1.utils.FragmentID;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class MonthViewFragment extends Fragment {
@@ -72,11 +86,18 @@ public class MonthViewFragment extends Fragment {
                 view.setBackground(getResources().getDrawable(R.drawable.month_view_border_enable)); // 클릭한 일의 배경 색을 변경
                 ClickedView.setClickedView(view); // 클릭한 뷰를 임시 뷰로 지정
 
+                int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY); // 현재시간
+
                 CalendarData.setPosition(position); // 클릭한 포지션을 저장
                 CalendarData.setDay(day); // 클릭한 일을 저장
-                CalendarData.setHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)); // 현재 시간을 저장
+                CalendarData.setHour(hour); // 현재 시간을 저장
+                CalendarData.setMinute(0); // 분
+                CalendarData.setEndHour(hour+1 > 23 ? 0 : hour+1); // 종료 시간
+                CalendarData.setEndMinute(0); // 종료 분
+                
             }
         });
+
 
         return fragment;
     }

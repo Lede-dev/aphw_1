@@ -1,6 +1,7 @@
 package com.example.aphw_1.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -14,7 +15,9 @@ import android.widget.TextView;
 import com.example.aphw_1.MainActivity;
 import com.example.aphw_1.R;
 import com.example.aphw_1.data.ListItem;
+import com.example.aphw_1.utils.CalendarSqlData;
 import com.example.aphw_1.utils.CalendarUtils;
+import com.example.aphw_1.utils.DBHelper;
 
 import java.util.ArrayList;
 
@@ -57,35 +60,67 @@ public class MonthViewCalendarAdapter extends BaseAdapter {
         int daysOfMonth = CalendarUtils.getDay(listItem.getYear(), listItem.getMonth()); // 현재 년도 현재 달의 마지막 일
 
         //xml에 TextView를 참조
-        TextView view = convertView.findViewById(R.id.dayView_format);
+        TextView dayView = convertView.findViewById(R.id.dayView_format); // 날짜 뷰
+        //TextView scheduleView = convertView.findViewById(R.id.schedule); // 스케쥴 뷰
 
         // 캘린더 그리드 높이 설정
-        // 캘린더 높이 / 캘린더 행(6)
-        view.setHeight(CalendarUtils.getCalenderHeight()/6);
+        int height = CalendarUtils.getCalenderHeight()/6; // 캘린더 1칸 내부의 뷰 1개 높이
+        dayView.setHeight(height); // 날짜 뷰 높이
+        //scheduleView.setHeight(height-dayView.getHeight()-1); // 스케쥴 뷰 높이
+
 
         if (position+1 < firstDayOfMonth || firstDayOfMonth+daysOfMonth < position+2){ // 입력받은 일이 해당 달의 범위를 벗어난다면 실행
-            view.setBackgroundColor(Color.parseColor("#888888")); // 배경 색을 변경
-            view.setTextColor(Color.parseColor("#404040")); // 글자 색을 회색으로 변경
-            view.setText(Integer.toString(listItem.getDay()));
+            
+            // 배경 색 설정
+            dayView.setBackgroundColor(Color.parseColor("#888888"));
+            //scheduleView.setBackgroundColor(Color.parseColor("#888888"));
+            // 글자 색 설정
+            dayView.setTextColor(Color.parseColor("#404040"));
+            //scheduleView.setTextColor(Color.parseColor("#404040"));
+
+            // 텍스트 설정
+            dayView.setText(Integer.toString(listItem.getDay()));
             return convertView;
         }
 
         int dayOfWeek = CalendarUtils.getDayOfWeek(listItem.getYear(), listItem.getMonth(), listItem.getDay()); // 입력받은 일의 요일을 계산
+        
+        String dateFormat = CalendarUtils.dateFormat(listItem.getYear(), listItem.getMonth(), listItem.getDay()); // db 조회를 위해 날짜를 String 으로 포멧팅
+
+        DBHelper dbHelper = MainActivity.getDbHelper();
+        Cursor data = dbHelper.getDataMatched(CalendarSqlData.Calendar.KEY_DATE, dateFormat);
+
+        String text = " ";
+        try {
+            data.moveToFirst();
+            // 첫번째 데이터가 존재한다면 출력
+            text = "\n" + data.getString(data.getColumnIndex(CalendarSqlData.Calendar.KEY_TITLE));
+            
+            // 다음 데이터가 존재한다면 개수로 출력
+            if (data.moveToNext()) {
+                text = "\n...(" + data.getCount() + ")";
+            }
+            //scheduleView.setText(text); // 스케쥴 뷰 텍스트 설정
+
+        } catch (Exception e) {
+
+        }
+
 
         if (dayOfWeek == 1){ // 입력받은 일이 일요일일 때
-            view.setTextColor(Color.parseColor("#ff0000")); // 글자 색을 빨간색으로 변경
-            view.setText(Integer.toString(listItem.getDay()));
+            dayView.setTextColor(Color.parseColor("#ff0000")); // 글자 색을 빨간색으로 변경
+            dayView.setText(listItem.getDay() + text);
             return convertView;
         }
 
         if (dayOfWeek == 7){ // 입력받은 일이 토요일일 때
-            view.setTextColor(Color.parseColor("#0000ff")); // 글자 색을 파란색으로 변경
-            view.setText(Integer.toString(listItem.getDay()));
+            dayView.setTextColor(Color.parseColor("#0000ff")); // 글자 색을 파란색으로 변경
+            dayView.setText(listItem.getDay() + text);
             return convertView;
         }
 
         // 입력받은 일이 일반적인 일일 때
-        view.setText(Integer.toString(listItem.getDay()));
+        dayView.setText(listItem.getDay() + text);
 
         return convertView;
     }

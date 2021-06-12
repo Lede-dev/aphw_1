@@ -28,6 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CalendarSqlData.Calendar.DELETE_TABLE);
         onCreate(db);
     }
+    /*
 
     // insert data
     public void insertCalendarDataBySQL(String date, String title, String location, String note) {
@@ -88,20 +89,39 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
+     */
+
     // get All data
     public Cursor getAllCalendarDataBySQL() {
         String sql = "SELECT * FROM " + CalendarSqlData.Calendar.TABLE_NAME;
         return getReadableDatabase().rawQuery(sql, null);
     }
 
+    public Cursor getDataMatched(String search, String value) {
+        String sql = "SELECT * FROM " + CalendarSqlData.Calendar.TABLE_NAME + " WHERE " + search + "='" + value + "'";
+        //String sql = String.format(String.format("SELECT * FROM %s WHERE %s='%s'",CalendarSqlData.Calendar.TABLE_NAME, search, value));
+        return getReadableDatabase().rawQuery(sql, null);
+    }
+
+    public Cursor getDataMatched(String search, String search2, String value, String value2) {
+        String sql = "SELECT * FROM " + CalendarSqlData.Calendar.TABLE_NAME + " WHERE " + search + "='" + value + "' AND " + search2 + "='" + value2 + "'";
+        //String sql = String.format(String.format("SELECT * FROM %s WHERE %s='%s'",CalendarSqlData.Calendar.TABLE_NAME, search, value));
+        return getReadableDatabase().rawQuery(sql, null);
+    }
+
     // insert data
-    public long insertCalendarData(String date, String title, String location, String note) {
+    public long insertCalendarData(String date, int startHour, int startMinute, int endHour, int endMinute, String title, double lat, double lng, String note) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(CalendarSqlData.Calendar.KEY_DATE, date);
+        values.put(CalendarSqlData.Calendar.KEY_START_HOUR, startHour);
+        values.put(CalendarSqlData.Calendar.KEY_START_MINUTE, startMinute);
+        values.put(CalendarSqlData.Calendar.KEY_END_HOUR, endHour);
+        values.put(CalendarSqlData.Calendar.KEY_END_MINUTE, endMinute);
         values.put(CalendarSqlData.Calendar.KEY_TITLE, title);
-        values.put(CalendarSqlData.Calendar.KEY_LOCATION, location);
+        values.put(CalendarSqlData.Calendar.KEY_LATITUDE, lat);
+        values.put(CalendarSqlData.Calendar.KEY_LONGITUDE, lng);
         values.put(CalendarSqlData.Calendar.KEY_NOTE, note);
 
         return db.insert(CalendarSqlData.Calendar.TABLE_NAME, null, values);
@@ -118,13 +138,18 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // update data
-    public long updateCalendarData(String id, String date, String title, String location, String note) {
+    public long updateCalendarData(String id, String date, int startHour, int startMinute, int endHour, int endMinute, String title, double lat, double lng, String note) {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(CalendarSqlData.Calendar.KEY_DATE, date);
+        values.put(CalendarSqlData.Calendar.KEY_START_HOUR, startHour);
+        values.put(CalendarSqlData.Calendar.KEY_START_MINUTE, startMinute);
+        values.put(CalendarSqlData.Calendar.KEY_END_HOUR, endHour);
+        values.put(CalendarSqlData.Calendar.KEY_END_MINUTE, endMinute);
         values.put(CalendarSqlData.Calendar.KEY_TITLE, title);
-        values.put(CalendarSqlData.Calendar.KEY_LOCATION, location);
+        values.put(CalendarSqlData.Calendar.KEY_LATITUDE, lat);
+        values.put(CalendarSqlData.Calendar.KEY_LONGITUDE, lng);
         values.put(CalendarSqlData.Calendar.KEY_NOTE, note);
 
         String whereClause = CalendarSqlData.Calendar._ID + " = ?";

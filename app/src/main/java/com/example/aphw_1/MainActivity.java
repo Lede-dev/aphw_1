@@ -1,17 +1,21 @@
 package com.example.aphw_1;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.example.aphw_1.adapters.MonthViewPagerAdapter;
@@ -19,19 +23,27 @@ import com.example.aphw_1.adapters.WeekViewPagerAdapter;
 import com.example.aphw_1.data.CalendarData;
 import com.example.aphw_1.fragments.MonthViewBarFragment;
 import com.example.aphw_1.fragments.WeekViewBarFragment;
+import com.example.aphw_1.utils.CalendarSqlData;
 import com.example.aphw_1.utils.CalendarUtils;
+import com.example.aphw_1.utils.DBHelper;
 import com.example.aphw_1.utils.EditorState;
 import com.example.aphw_1.utils.FragmentID;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
+    private static DBHelper dbHelper;
 
     // 외부 class에서 사용하기 위한 Instance 반환
     public static MainActivity getInstance(){
         return instance;
+    }
+    public static DBHelper getDbHelper() {
+        return dbHelper;
     }
 
     // 메뉴 생성
@@ -59,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        CalendarData calendarData = new CalendarData(); // 현재 년/월 로드
         int id = getIntent().getIntExtra("view", FragmentID.MONTH.getID()); // 출력중인 fragment id 불러오기
 
         switch (item.getItemId()) {
@@ -68,14 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // 월간 fragment일 때
                 if (id == FragmentID.MONTH.getID()) {
-                    startActivity(createIntent(calendarData.getYear()-1, calendarData.getMonth(), FragmentID.MONTH, MainActivity.class)); // 새로운 Intent를 만들어서 Activity 시작
+                    startActivity(createIntent(CalendarData.getYear()-1, CalendarData.getMonth(), FragmentID.MONTH, MainActivity.class)); // 새로운 Intent를 만들어서 Activity 시작
                     finish(); // 기존 Activity 종료
                 }
                 
                 // 주간 fragment일 때
                 else if (id == FragmentID.WEEK.getID()) {
-                    int month = calendarData.getMonth() - 1;
-                    int year = calendarData.getYear();
+                    int month = CalendarData.getMonth() - 1;
+                    int year = CalendarData.getYear();
                     if (month < 0) {
                         year--; month = 11;
                     }
@@ -88,12 +99,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.right_button:
 
                 if (id == FragmentID.MONTH.getID()) {
-                    startActivity(createIntent(calendarData.getYear()+1, calendarData.getMonth(), FragmentID.MONTH, MainActivity.class)); // 새로운 Intent를 만들어 Activity 시작
+                    startActivity(createIntent(CalendarData.getYear()+1, CalendarData.getMonth(), FragmentID.MONTH, MainActivity.class)); // 새로운 Intent를 만들어 Activity 시작
                     finish(); // 기존 Activity 종료
                 }
                 else if (id == FragmentID.WEEK.getID()) {
-                    int month = calendarData.getMonth() + 1;
-                    int year = calendarData.getYear();
+                    int month = CalendarData.getMonth() + 1;
+                    int year = CalendarData.getYear();
                     if (month > 11) {
                         year++; month = 0;
                     }
@@ -104,13 +115,13 @@ public class MainActivity extends AppCompatActivity {
 
             // 월간 달력 전환
             case R.id.action_monthview:
-                startActivity(createIntent(calendarData.getYear(), calendarData.getMonth(), FragmentID.MONTH, MainActivity.class)); // 새로운 Intent를 만들어 Activity 시작
+                startActivity(createIntent(CalendarData.getYear(), CalendarData.getMonth(), FragmentID.MONTH, MainActivity.class)); // 새로운 Intent를 만들어 Activity 시작
                 finish(); // 기존 Activity 종료
                 return true;
 
             // 주간 달력 전환
             case R.id.action_weekview:
-                startActivity(createIntent(calendarData.getYear(), calendarData.getMonth(), FragmentID.WEEK, MainActivity.class)); // 새로운 Intent를 만들어 Activity 시작
+                startActivity(createIntent(CalendarData.getYear(), CalendarData.getMonth(), FragmentID.WEEK, MainActivity.class)); // 새로운 Intent를 만들어 Activity 시작
                 finish(); // 기존 Activity 종료
                 return true;
             
@@ -120,8 +131,17 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.getInstance(), "일정을 추가할 위치를 선택해주세요" ,Toast.LENGTH_SHORT).show();      // toast message로 띄울 text
                     return true;
                 }
-                startActivity(createIntent(calendarData.getYear(), calendarData.getMonth(), id, Calendar_Setting_activity.class));
+                startActivity(createIntent(CalendarData.getYear(), CalendarData.getMonth(), id, Calendar_Setting_activity.class));
                 CalendarData.setEditorState(EditorState.INSERT); // 일정 추가
+                return true;
+
+                // 일정 추가 액티비티
+            case R.id.calendar_update:
+                if (CalendarData.getDay() == -1) {
+                    Toast.makeText(MainActivity.getInstance(), "수정할 일정을 선택해주세요" ,Toast.LENGTH_SHORT).show();      // toast message로 띄울 text
+                    return true;
+                }
+                openSchedule(id);
                 return true;
 
             default:
@@ -162,6 +182,9 @@ public class MainActivity extends AppCompatActivity {
         // Activity가 생성될 때 생성된 Activtiy를 저장, 다른 class에서 Activity에 접근하기 위함
         instance = this;
 
+        // db helper 생성
+        dbHelper = new DBHelper(this);
+
         // 가로모드일 때 달력 높이 오차 설정
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             CalendarUtils.setErrorHeightInLandScape();
@@ -182,70 +205,153 @@ public class MainActivity extends AppCompatActivity {
         CalendarData.setDay(-1); // 현재 일을 선택되지 않은 상태로 초기화
 
         // 툴 바를 앱 바로 설정
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar); // 툴 바 로드
-        myToolbar.setTitle(CalendarData.getYear() + "년 " + (CalendarData.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
-        setSupportActionBar(myToolbar); // 툴 바를 앱 바로 설정
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar); // 툴 바 로드
+        toolbar.setTitle(CalendarData.getYear() + "년 " + (CalendarData.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
+        setSupportActionBar(toolbar); // 툴 바를 앱 바로 설정
 
-        // 출력할 Fragment 생성
-        int view = intent.getIntExtra("view", FragmentID.MONTH.getID()); // 출력할 fragmentID 로드, 해당 되는 이름의 벨류가 없을 때 MonthView ID 리턴
+        // 출력할 Fragment 설정
+        int fragmentId = intent.getIntExtra("view", FragmentID.MONTH.getID()); // 출력할 fragmentID 로드, 해당 되는 이름의 벨류가 없을 때 MonthView ID 리턴
+
+        CalendarData.setFragmentID(FragmentID.getFragmentId(fragmentId));
 
         // 출력할 뷰가 MonthView 일 때
-        if (view == FragmentID.MONTH.getID()){
-
+        if (fragmentId == FragmentID.MONTH.getID()){
             // Bar Fragment 생성
             getSupportFragmentManager().beginTransaction().add(R.id.bar_container, new MonthViewBarFragment()).commit();
 
             // pager adapter 객체 설정
-            ViewPager2 vpPager = findViewById(R.id.vpPager); // pager 로드
+            ViewPager2 monthPager = findViewById(R.id.vpPager); // pager 로드
             FragmentStateAdapter adapter = new MonthViewPagerAdapter(this); // pager adapter 로드
-            vpPager.setAdapter(adapter); // pager와 adapter를 연결
+            monthPager.setAdapter(adapter); // pager와 adapter를 연결
 
             // 출력할 페이지를 현재 달에 맞는 페이지로 설정
-            vpPager.setCurrentItem(month);
+            monthPager.setCurrentItem(CalendarData.getMonth());
+
+            CalendarData.setPage(CalendarData.getMonth()); // 현재 페이지 저장
 
             // pager callback
-            vpPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            monthPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageSelected(int position) {
                     CalendarData.setMonth(position); // 현재 월을 저장
                     CalendarData.setPage(position); // pager 페이지를 저장
-                    myToolbar.setTitle(CalendarData.getYear() + "년 " + (CalendarData.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
-
+                    toolbar.setTitle(CalendarData.getYear() + "년 " + (CalendarData.getMonth()+1) +"월"); // 툴 바의 타이틀, 불러온 달은 0~11월 이기 때문에 (month+1)을 하여 1~12월로 현재 달을 출력
                 }
             });
-
         }
 
         // 출력할 뷰가 WeekView 일 때
-        else if (view == FragmentID.WEEK.getID()){
+        else if (fragmentId == FragmentID.WEEK.getID()) {
 
             // Bar Fragment 생성
             getSupportFragmentManager().beginTransaction().add(R.id.bar_container, new WeekViewBarFragment()).commit();
 
             // pager adapter 객체 설정
-            ViewPager2 vpPager = findViewById(R.id.vpPager); // pager 로드
+            ViewPager2 weekPager = findViewById(R.id.vpPager); // pager 로드
             FragmentStateAdapter adapter = new WeekViewPagerAdapter(this); // pager adapter 로드
-            vpPager.setAdapter(adapter); // pager와 adapter를 연결
+            weekPager.setAdapter(adapter); // pager와 adapter를 연결
 
             int day = Calendar.getInstance().get(Calendar.DATE); // 현재 날짜를 로드
-            int firstDayOfWeek = CalendarUtils.getFirstDay(year, month); // 현재 월의 첫번째 일을 로드
-            int page = (day + firstDayOfWeek)/7; // 출력할 페이지 계산
+            int firstDayOfWeek = CalendarUtils.getFirstDay(CalendarData.getYear(), CalendarData.getMonth()); // 현재 월의 첫번째 일을 로드
+            int page = (day + firstDayOfWeek) / 7; // 출력할 페이지 계산
 
             // 출력할 페이지를 현재 날짜에 맞는 페이지로 설정
-            vpPager.setCurrentItem(page);
+            weekPager.setCurrentItem(page);
             CalendarData.setPage(page); // 현재 페이지 위치 저장
 
             // pager callback
-            vpPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            weekPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageSelected(int position) {
                     CalendarData.setPage(position); // pager 페이지를 저장
                 }
             });
+        }
+    }
 
+    private void openSchedule(int id) {
+        String dateFormat = CalendarUtils.dateFormat(CalendarData.getYear(), CalendarData.getMonth(), CalendarData.getDay()); // db 조회를 위해 날짜를 String 으로 포멧팅
+        DBHelper dbHelper = MainActivity.getDbHelper();
+        Cursor data;
+
+        if (id == FragmentID.MONTH.getID()){
+            data = dbHelper.getDataMatched(CalendarSqlData.Calendar.KEY_DATE, dateFormat);
+        }
+        else {
+            data = dbHelper.getDataMatched(CalendarSqlData.Calendar.KEY_DATE, CalendarSqlData.Calendar.KEY_START_HOUR, dateFormat, Integer.toString(CalendarData.getHour()));
         }
 
+        try{
+            data.moveToFirst();
+            if (data.moveToNext()) {
+                createScheduleSelectDialog(data);
+            }
+            else {
+                data.moveToFirst();
+                String dbId = data.getString(data.getColumnIndex(CalendarSqlData.Calendar._ID));
+                CalendarData.setEditorState(EditorState.UPDATE); // 일정 추가
+                CalendarData.setId(dbId); // 불러올 db ID 저장
+                Intent intent = MainActivity.getInstance()
+                        .createIntent(CalendarData.getYear(), CalendarData.getMonth(), FragmentID.MONTH, Calendar_Setting_activity.class);
+                startActivity(intent);
+            }
+
+        } catch (Exception e) {
+
+        }
     }
+
+    private void createScheduleSelectDialog(Cursor cursor) {
+
+        // 출력할 데이터 정렬
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.getInstance(), android.R.layout.select_dialog_item);
+        List<String> ids = new ArrayList<>();
+        try {
+            // cursor의 첫번째 위치의 데이터 adapter에 추가
+            cursor.moveToFirst();
+            String id = cursor.getString(cursor.getColumnIndex(CalendarSqlData.Calendar._ID));
+            String title = cursor.getString(cursor.getColumnIndex(CalendarSqlData.Calendar.KEY_TITLE));
+            adapter.add(title);
+            ids.add(id); // 리스트에 순서에 맞춰 id 추가
+
+            // 다음 데이터가 존재한다면 이동하면서 adapter에 추가
+            while(cursor.moveToNext()) {
+                id = cursor.getString(cursor.getColumnIndex(CalendarSqlData.Calendar._ID));
+                title = cursor.getString(cursor.getColumnIndex(CalendarSqlData.Calendar.KEY_TITLE));
+                adapter.add(title);
+                ids.add(id);
+            }
+
+            adapter.notifyDataSetChanged();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 다이얼로그 생성
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstance());
+        builder.setTitle(String.format("%d년 %d월 %d일", CalendarData.getYear(), CalendarData.getMonth()+1, CalendarData.getDay()));
+
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String id = ids.get(which);
+
+                // 일정 데이터 저장
+                CalendarData.setEditorState(EditorState.UPDATE);
+                CalendarData.setId(id);
+
+                // 일정 액티비티 실행
+                Intent intent = MainActivity.getInstance()
+                        .createIntent(CalendarData.getYear(), CalendarData.getMonth(), FragmentID.MONTH, Calendar_Setting_activity.class);
+                startActivity(intent);
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
 }
 

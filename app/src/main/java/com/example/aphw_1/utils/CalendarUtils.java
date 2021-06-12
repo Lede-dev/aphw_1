@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.aphw_1.MainActivity;
 import com.example.aphw_1.R;
+import com.example.aphw_1.data.CalendarData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -234,4 +235,29 @@ public class CalendarUtils {
     public static int getErrorHeight() {
         return e;
     }
+
+    /**
+     * db에 저장될 날짜 포멧팅
+     */
+    public static String dateFormat(int year, int month, int day) {
+        return String.format("%d-%d-%d", year, month, day);
+    }
+
+    /**
+     * db에 저장될 날짜 포멧팅
+     */
+    public static String dateFormat() {
+        return dateFormat(CalendarData.getYear(), CalendarData.getMonth(), CalendarData.getDay());
+    }
+
+    /**
+     * 일정의 시작 시간이 종료시간보다 빠른지 체크, 빠르다면 true 반환
+     */
+    public static boolean timeCheck(int startHour, int startMinute, int endHour, int endMinute) {
+        if (startHour < endHour) return true; // 시작 시간이 종료 시간보다 빠르다면 true
+        if ((startHour == endHour) && (startMinute <= endMinute)) return true; // 시간이 같을 때 시작, 분이 종료 분보다 같거나 빠르다면 true
+        return false;
+    }
+
+
 }

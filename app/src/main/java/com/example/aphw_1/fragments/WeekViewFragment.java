@@ -1,6 +1,7 @@
 package com.example.aphw_1.fragments;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,11 +13,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.example.aphw_1.adapters.MonthViewCalendarAdapter;
-import com.example.aphw_1.adapters.WeekViewGridAdapter;
+import com.example.aphw_1.MainActivity;
+import com.example.aphw_1.adapters.WeekViewCalendarAdapter;
 import com.example.aphw_1.R;
 import com.example.aphw_1.data.ClickedView;
 import com.example.aphw_1.data.CalendarData;
+import com.example.aphw_1.utils.CalendarSqlData;
 import com.example.aphw_1.utils.CalendarUtils;
 
 import java.util.List;
@@ -47,22 +49,33 @@ public class WeekViewFragment extends Fragment {
         // 그리드뷰
         GridView grid = fragment.findViewById(R.id.weekview_grid_container);
 
+        List<Integer> days = CalendarUtils.getDays(year, month); // 날짜 데이터 로드
+
         // 어댑터
-        WeekViewGridAdapter gridAdapter = new WeekViewGridAdapter();
+        WeekViewCalendarAdapter gridAdapter = new WeekViewCalendarAdapter();
 
         // 어댑터에 데이터 추가
-        for (int i=0; i<168; i++)
-            gridAdapter.addItem(" ");
+        for (int i=0; i<168; i++){
+            try {
+                String dateFormat = CalendarUtils.dateFormat(CalendarData.getYear(), CalendarData.getMonth(), days.get((position*7) + (i%7)));
+                String hour = Integer.toString(i/7);
+                Cursor data = MainActivity.getDbHelper().getDataMatched(CalendarSqlData.Calendar.KEY_DATE, CalendarSqlData.Calendar.KEY_START_HOUR, dateFormat, hour);
+                data.moveToFirst();
+                String title = data.getString(data.getColumnIndex(CalendarSqlData.Calendar.KEY_TITLE));
+                if (data.moveToNext()) {
+                    title = "...(" + data.getCount() + ")";
+                }
+                if (title != null) {
+                    gridAdapter.addItem(title);
+                }
+
+            } catch (Exception e) {
+                gridAdapter.addItem(" ");
+            }
+        }
 
         // 그리드뷰에 어댑터 연결
         grid.setAdapter(gridAdapter);
-
-        List<Integer> days = CalendarUtils.getDays(year, month); // 날자 데이터 로드
-        MonthViewCalendarAdapter adapt = new MonthViewCalendarAdapter();
-        for (Integer day : days){
-            adapt.addItem(year, month, day); // 어댑터에 데이터 추가
-        }
-
 
         TextView[] dayBar = new TextView[7];
 
@@ -201,16 +214,17 @@ public class WeekViewFragment extends Fragment {
 
                 List<Integer> dayBar_days = CalendarUtils.getDays(year, month);
                 int day = dayBar_days.get((CalendarData.getPage()*7) + (position%7));
+                int hour = position/7; // 시간
 
                 CalendarData.setPosition(position); // 클릭한 포지션 저장
                 CalendarData.setDay(day); // 클릭한 일을 저장
-                CalendarData.setHour(position/7);
+                CalendarData.setHour(hour); // 시간
+                CalendarData.setMinute(0); // 분
+                CalendarData.setEndHour(hour+1 > 23 ? 0 : hour+1); // 종료 시간
+                CalendarData.setEndMinute(0); // 종료 분
             }
 
-
         });
-
-
 
         return fragment;
 
