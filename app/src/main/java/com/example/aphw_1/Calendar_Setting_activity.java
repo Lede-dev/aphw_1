@@ -207,13 +207,8 @@ public class Calendar_Setting_activity extends AppCompatActivity implements OnMa
                 if (location != null) {
                     CalendarData.setLat(location.getLatitude()); // 위도 저장
                     CalendarData.setLng(location.getLongitude()); // 경도 저장
-
-
-                } else
-                    Toast.makeText(getApplicationContext(),
-                            "No location detected",
-                            Toast.LENGTH_SHORT)
-                            .show();
+                    
+                }
             }
         });
     }
